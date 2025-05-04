@@ -515,7 +515,18 @@ async function createUser(user: schema.UserInsert) {
     return existingUser;
   }
 
-  const [newUser] = await db.insert(schema.users).values(user).returning();
+  // Import the hashPassword function from auth.ts
+  const { hashPassword } = await import('../server/auth');
+  
+  // Hash the password
+  const hashedPassword = await hashPassword(user.password);
+  
+  // Create the user with the hashed password
+  const [newUser] = await db.insert(schema.users).values({
+    ...user,
+    password: hashedPassword
+  }).returning();
+  
   console.log(`Created user: ${user.username}`);
   return newUser;
 }
