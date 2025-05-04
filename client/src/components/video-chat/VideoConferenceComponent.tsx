@@ -33,13 +33,29 @@ export default function VideoConferenceComponent({
     }
   }, [initialRoomName]);
 
-  const handleJoinMeeting = () => {
+  const handleJoinMeeting = async () => {
     setIsJoining(true);
-    // Simulating connection delay
-    setTimeout(() => {
-      setIsJoining(false);
+    try {
+      if (appointmentId) {
+        // Join the consultation through the API
+        const response = await fetch('/api/video-consult/join', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ appointmentId })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to join consultation');
+        }
+      }
       setIsInCall(true);
-    }, 1500);
+    } catch (error) {
+      console.error('Error joining consultation:', error);
+    } finally {
+      setIsJoining(false);
+    }
   };
 
   const handleLeaveMeeting = () => {
