@@ -36,9 +36,31 @@ export default function VideoConferenceComponent({
   const handleJoinMeeting = async () => {
     setIsJoining(true);
     try {
+      // For admin/doctor, create appointment if none exists
+      if (isDoctor && !appointmentId) {
+        const bookResponse = await fetch('/api/video-consult/book', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            doctorId: user.id,
+            slot: new Date().toLocaleTimeString(),
+            date: new Date().toISOString(),
+            status: 'scheduled'
+          })
+        });
+        
+        if (!bookResponse.ok) {
+          throw new Error('Failed to create consultation');
+        }
+        
+        const bookData = await bookResponse.json();
+        appointmentId = bookData.id;
+      }
+
       if (appointmentId) {
-        // Join the consultation through the API
-        const response = await fetch('/api/video-consult/join', {
+        const joinResponse = await fetch('/api/video-consult/join', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -46,13 +68,15 @@ export default function VideoConferenceComponent({
           body: JSON.stringify({ appointmentId })
         });
         
-        if (!response.ok) {
+        if (!joinResponse.ok) {
           throw new Error('Failed to join consultation');
         }
       }
+      
       setIsInCall(true);
     } catch (error) {
       console.error('Error joining consultation:', error);
+      // Show error toast here
     } finally {
       setIsJoining(false);
     }
