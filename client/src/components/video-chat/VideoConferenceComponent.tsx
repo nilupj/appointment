@@ -124,7 +124,7 @@ export default function VideoConferenceComponent({
       </Helmet>
 
       {!isInCall ? (
-        <Card className="mx-4 sm:mx-auto max-w-lg">
+        <Card className="mx-4 sm:mx-auto max-w-lg mt-4 sm:mt-8">
           <CardHeader>
             <CardTitle>Join Video Consultation</CardTitle>
             <CardDescription>
@@ -173,7 +173,7 @@ export default function VideoConferenceComponent({
           </CardContent>
         </Card>
       ) : (
-        <div className="h-[100vh] sm:h-[80vh] relative">
+        <div className="h-screen w-full fixed top-0 left-0 z-50 bg-background">
           <JitsiMeeting
             domain="meet.jit.si"
             roomName={roomName}
@@ -227,12 +227,12 @@ export default function VideoConferenceComponent({
             }}
           />
 
-          <div className="absolute top-4 right-4 z-10">
+          <div className="fixed top-4 right-4 z-[60]">
             <Button 
               variant="destructive" 
               size="sm" 
               onClick={handleLeaveMeeting}
-              className="px-2 py-1 sm:px-4 sm:py-2"
+              className="px-3 py-2 text-sm font-medium shadow-lg"
             >
               End Call
             </Button>
