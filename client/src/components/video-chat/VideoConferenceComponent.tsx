@@ -36,31 +36,28 @@ export default function VideoConferenceComponent({
   const handleJoinMeeting = async () => {
     setIsJoining(true);
     try {
-      let currentAppointmentId = appointmentId;
-
-      // For admin/doctor, create appointment if none exists
-      if (!currentAppointmentId) {
-        const bookResponse = await fetch('/api/video-consult/book', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            doctorId: isDoctor ? user.id : 1, // Use default doctor ID if patient
-            userId: user.id,
-            slot: new Date().toLocaleTimeString(),
-            date: new Date().toISOString(),
-            status: 'scheduled'
-          })
-        });
-        
-        if (!bookResponse.ok) {
-          throw new Error('Failed to create consultation');
-        }
-        
-        const bookData = await bookResponse.json();
-        currentAppointmentId = bookData.id;
+      // Always create a new appointment
+      const bookResponse = await fetch('/api/video-consult/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          doctorId: 3, // Michael Chen's ID
+          userId: user.id,
+          slot: new Date().toLocaleTimeString(),
+          date: new Date().toISOString(),
+          status: 'scheduled'
+        })
+      });
+      
+      if (!bookResponse.ok) {
+        throw new Error('Failed to create consultation');
+        return;
       }
+      
+      const bookData = await bookResponse.json();
+      const currentAppointmentId = bookData.id;
 
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
