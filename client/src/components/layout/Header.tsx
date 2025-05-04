@@ -1,13 +1,30 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
-import { Menu, X } from "lucide-react";
+import { 
+  Menu, 
+  X, 
+  User, 
+  LogOut, 
+  Settings,
+  Calendar,
+  FileText
+} from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [location] = useLocation();
   const isMobile = useMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logoutMutation } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -19,6 +36,10 @@ const Header = () => {
 
   const isLinkActive = (path: string) => {
     return location === path;
+  };
+  
+  const handleLogout = () => {
+    logoutMutation.mutate();
   };
 
   return (
@@ -96,7 +117,51 @@ const Header = () => {
               </>
             )}
             
-            <Button className="primary-button">Login / Signup</Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <User size={16} />
+                    <span className="hidden md:inline">{user.firstName || user.username}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem className="cursor-pointer" asChild>
+                    <Link href="/profile" className="flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer" asChild>
+                    <Link href="/my-appointments" className="flex items-center">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      <span>My Appointments</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer" asChild>
+                    <Link href="/my-medical-records" className="flex items-center">
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>Medical Records</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-500 focus:text-red-500"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                className="primary-button"
+                asChild
+              >
+                <Link href="/auth">Login / Signup</Link>
+              </Button>
+            )}
             
             {isMobile && (
               <button 
@@ -186,6 +251,54 @@ const Header = () => {
                   >
                     Security & Help
                   </Link>
+                </li>
+                <li className="pt-2 mt-2 border-t border-gray-200">
+                  {user ? (
+                    <>
+                      <Link
+                        href="/profile"
+                        className="block font-medium text-primary"
+                        onClick={closeMenu}
+                      >
+                        <User className="inline-block mr-2 h-4 w-4" />
+                        <span>My Profile</span>
+                      </Link>
+                      <Link
+                        href="/my-appointments"
+                        className="block font-medium text-[#666666] mt-3"
+                        onClick={closeMenu}
+                      >
+                        <Calendar className="inline-block mr-2 h-4 w-4" />
+                        <span>My Appointments</span>
+                      </Link>
+                      <Link
+                        href="/my-medical-records"
+                        className="block font-medium text-[#666666] mt-3"
+                        onClick={closeMenu}
+                      >
+                        <FileText className="inline-block mr-2 h-4 w-4" />
+                        <span>Medical Records</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          closeMenu();
+                        }}
+                        className="block font-medium text-red-500 mt-3"
+                      >
+                        <LogOut className="inline-block mr-2 h-4 w-4" />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      href="/auth"
+                      className="block font-medium text-primary"
+                      onClick={closeMenu}
+                    >
+                      Login / Signup
+                    </Link>
+                  )}
                 </li>
               </ul>
             </nav>
