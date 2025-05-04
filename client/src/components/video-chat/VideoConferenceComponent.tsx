@@ -28,10 +28,11 @@ export default function VideoConferenceComponent({
   // Generate a random room name if not provided
   useEffect(() => {
     if (!initialRoomName) {
-      const randomRoomId = `mediconnect-${Math.random().toString(36).substring(2, 11)}`;
+      const timestamp = new Date().getTime();
+      const randomRoomId = `mediconnect-${user.id}-${timestamp}`;
       setRoomName(randomRoomId);
     }
-  }, [initialRoomName]);
+  }, [initialRoomName, user.id]);
 
   const handleJoinMeeting = async () => {
     setIsJoining(true);
@@ -177,10 +178,10 @@ export default function VideoConferenceComponent({
             domain="meet.jit.si"
             roomName={roomName}
             configOverwrite={{
-              startWithAudioMuted: true,
+              startWithAudioMuted: false,
               startWithVideoMuted: false,
-              prejoinPageEnabled: false,
-              hideConferenceSubject: true,
+              prejoinPageEnabled: true,
+              hideConferenceSubject: false,
               disableDeepLinking: true,
               websocket: 'wss://meet.jit.si/xmpp-websocket',
               resolution: 720,
@@ -192,7 +193,12 @@ export default function VideoConferenceComponent({
                     min: 180
                   }
                 }
-              }
+              },
+              p2p: {
+                enabled: true
+              },
+              enableLipSync: true,
+              enableAutomaticUrlCopy: false
             }}
             interfaceConfigOverwrite={{
               TOOLBAR_BUTTONS: [
