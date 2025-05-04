@@ -139,7 +139,18 @@ export default function VideoConferenceComponent({
               startWithVideoMuted: false,
               prejoinPageEnabled: false,
               hideConferenceSubject: true,
-              disableDeepLinking: true
+              disableDeepLinking: true,
+              websocket: 'wss://meet.jit.si/xmpp-websocket',
+              resolution: 720,
+              constraints: {
+                video: {
+                  height: {
+                    ideal: 720,
+                    max: 720,
+                    min: 180
+                  }
+                }
+              }
             }}
             interfaceConfigOverwrite={{
               TOOLBAR_BUTTONS: [
