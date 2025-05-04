@@ -13,6 +13,7 @@ import AuthPage from "@/pages/auth-page";
 import UserProfile from "@/pages/UserProfile";
 import LabTests from "@/pages/LabTests";
 import PaymentPage from "@/components/payment/PaymentPage";
+import WhatsAppFloat from "@/components/chat/WhatsAppFloat";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -47,6 +48,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
+        <WhatsAppFloat />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>
