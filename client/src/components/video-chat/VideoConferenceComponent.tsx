@@ -36,15 +36,18 @@ export default function VideoConferenceComponent({
   const handleJoinMeeting = async () => {
     setIsJoining(true);
     try {
+      let currentAppointmentId = appointmentId;
+
       // For admin/doctor, create appointment if none exists
-      if (isDoctor && !appointmentId) {
+      if (!currentAppointmentId) {
         const bookResponse = await fetch('/api/video-consult/book', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            doctorId: user.id,
+            doctorId: isDoctor ? user.id : 1, // Use default doctor ID if patient
+            userId: user.id,
             slot: new Date().toLocaleTimeString(),
             date: new Date().toISOString(),
             status: 'scheduled'
@@ -56,23 +59,24 @@ export default function VideoConferenceComponent({
         }
         
         const bookData = await bookResponse.json();
-        appointmentId = bookData.id;
+        currentAppointmentId = bookData.id;
       }
 
-      if (appointmentId) {
-        const joinResponse = await fetch('/api/video-consult/join', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ appointmentId })
-        });
-        
-        if (!joinResponse.ok) {
-          throw new Error('Failed to join consultation');
-        }
-      }
+      // Join the consultation
+      const joinResponse = await fetch('/api/video-consult/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ appointmentId: currentAppointmentId })
+      });
       
+      if (!joinResponse.ok) {
+        throw new Error('Failed to join consultation');
+      }
+
+      const joinData = await joinResponse.json();
+      setRoomName(joinData.roomId);
       setIsInCall(true);
     } catch (error) {
       console.error('Error joining consultation:', error);
