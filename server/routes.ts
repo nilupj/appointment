@@ -108,11 +108,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Video consultation doctors
   app.get(`${apiPrefix}/video-consult-doctors`, async (req, res) => {
     try {
-      const doctors = await storage.getVideoConsultDoctors();
+      const { specialty, language, rating, availability } = req.query;
+      const filters: any = {};
+      
+      if (specialty && specialty !== 'all') filters.specialty = specialty as string;
+      if (language && language !== 'all') filters.language = language as string;
+      if (availability && availability !== 'all') filters.availability = availability as string;
+      
+      if (rating) {
+        filters.minRating = parseFloat(rating as string);
+      }
+      
+      const doctors = await storage.getVideoConsultDoctors(filters);
       res.json(doctors);
     } catch (error) {
       console.error("Error fetching video consult doctors:", error);
       res.status(500).json({ message: "Failed to fetch video consult doctors" });
+    }
+  });
+  
+  // Video consultation appointment booking
+  app.post(`${apiPrefix}/video-consult/book`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
+      const { doctorId, slot, date, patientNotes } = req.body;
+      
+      if (!doctorId || !slot || !date) {
+        return res.status(400).json({ message: "Doctor ID, slot time, and date are required" });
+      }
+      
+      // Create new appointment
+      const appointment = await storage.createVideoConsultation({
+        doctorId,
+        userId: req.user.id,
+        slot,
+        date,
+        patientNotes: patientNotes || "",
+        status: "scheduled"
+      });
+      
+      res.status(201).json(appointment);
+    } catch (error) {
+      console.error("Error booking video consultation:", error);
+      res.status(500).json({ message: "Failed to book consultation" });
+    }
+  });
+  
+  // Get user's video consultation appointments
+  app.get(`${apiPrefix}/video-consult/appointments`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
+      const appointments = await storage.getUserVideoConsultations(req.user.id);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching user's video consultations:", error);
+      res.status(500).json({ message: "Failed to fetch consultations" });
+    }
+  });
+  
+  // Get doctor's available slots
+  app.get(`${apiPrefix}/video-consult/doctor/:id/slots`, async (req, res) => {
+    try {
+      const doctorId = parseInt(req.params.id);
+      const date = req.query.date as string;
+      
+      if (!date) {
+        return res.status(400).json({ message: "Date parameter is required" });
+      }
+      
+      const availableSlots = await storage.getDoctorAvailableSlots(doctorId, date);
+      res.json(availableSlots);
+    } catch (error) {
+      console.error("Error fetching doctor's available slots:", error);
+      res.status(500).json({ message: "Failed to fetch available slots" });
+    }
+  });
+  
+  // Join video consultation room
+  app.post(`${apiPrefix}/video-consult/join`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
+      const { appointmentId } = req.body;
+      
+      if (!appointmentId) {
+        return res.status(400).json({ message: "Appointment ID is required" });
+      }
+      
+      const roomDetails = await storage.joinVideoConsultation(appointmentId, req.user.id);
+      res.json(roomDetails);
+    } catch (error) {
+      console.error("Error joining video consultation:", error);
+      res.status(500).json({ message: "Failed to join consultation" });
     }
   });
 

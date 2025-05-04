@@ -343,16 +343,48 @@ class Storage {
   }
 
   // Video consult doctors
-  async getVideoConsultDoctors(): Promise<VideoConsultDoctor[]> {
+  async getVideoConsultDoctors(filters: any = {}): Promise<VideoConsultDoctor[]> {
     try {
+      // Build the where clause based on filters
+      const conditions = [];
+      
+      if (filters.specialty) {
+        const specialty = await db.query.specialties.findFirst({
+          where: eq(schema.specialties.name, filters.specialty)
+        });
+        
+        if (specialty) {
+          conditions.push(eq(schema.doctors.specialtyId, specialty.id));
+        }
+      }
+      
+      if (filters.minRating) {
+        conditions.push(gte(schema.doctors.rating, filters.minRating));
+      }
+      
+      // Language filter should be implemented with array containment
+      // For now, we'll handle it in memory
+      
       const doctors = await db.query.doctors.findMany({
+        where: conditions.length > 0 ? and(...conditions) : undefined,
         with: {
           specialty: true
         },
-        limit: 6
+        orderBy: [desc(schema.doctors.rating)],
+        limit: 10
       });
       
-      return doctors.map(d => ({
+      let filteredDoctors = doctors;
+      
+      // Apply language filter in memory
+      if (filters.language) {
+        filteredDoctors = doctors.filter(d => {
+          const languages = Array.isArray(d.languages) ? d.languages : [];
+          return languages.includes(filters.language);
+        });
+      }
+      
+      return filteredDoctors.map(d => ({
         id: d.id,
         name: d.name,
         specialty: d.specialty?.name || 'General Physician',
@@ -365,6 +397,144 @@ class Storage {
       }));
     } catch (error) {
       console.error("Error in getVideoConsultDoctors:", error);
+      throw error;
+    }
+  }
+  
+  // Create a video consultation appointment
+  async createVideoConsultation(data: any): Promise<any> {
+    try {
+      // Verify doctor exists
+      const doctor = await db.query.doctors.findFirst({
+        where: eq(schema.doctors.id, data.doctorId)
+      });
+      
+      if (!doctor) {
+        throw new Error("Doctor not found");
+      }
+      
+      // Create consultation with unique room ID
+      const roomId = `mc-${Math.random().toString(36).substring(2, 11)}`;
+      
+      const [appointment] = await db.insert(schema.appointments).values({
+        doctorId: data.doctorId,
+        userId: data.userId,
+        appointmentDate: new Date(data.date),
+        timeSlot: data.slot,
+        patientNotes: data.patientNotes,
+        status: data.status,
+        roomId: roomId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      
+      return {
+        ...appointment,
+        roomId
+      };
+    } catch (error) {
+      console.error("Error in createVideoConsultation:", error);
+      throw error;
+    }
+  }
+  
+  // Get user's video consultation appointments
+  async getUserVideoConsultations(userId: number): Promise<any[]> {
+    try {
+      const appointments = await db.query.appointments.findMany({
+        where: eq(schema.appointments.userId, userId),
+        with: {
+          doctor: {
+            with: {
+              specialty: true
+            }
+          }
+        },
+        orderBy: [desc(schema.appointments.appointmentDate)]
+      });
+      
+      return appointments.map(a => ({
+        id: a.id,
+        doctorId: a.doctorId,
+        doctorName: a.doctor?.name || 'Unknown Doctor',
+        specialty: a.doctor?.specialty?.name || 'General',
+        date: a.appointmentDate ? new Date(a.appointmentDate).toISOString() : null,
+        timeSlot: a.timeSlot,
+        status: a.status,
+        roomId: a.roomId,
+        patientNotes: a.patientNotes
+      }));
+    } catch (error) {
+      console.error("Error in getUserVideoConsultations:", error);
+      throw error;
+    }
+  }
+  
+  // Get doctor's available slots
+  async getDoctorAvailableSlots(doctorId: number, date: string): Promise<string[]> {
+    try {
+      // Fixed slots based on doctor's schedule
+      const allSlots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                         '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
+      
+      // Find booked slots for the given date and doctor
+      const bookedAppointments = await db.query.appointments.findMany({
+        where: and(
+          eq(schema.appointments.doctorId, doctorId),
+          // Filter for the given date
+          eq(sql`DATE(${schema.appointments.appointmentDate})`, date)
+        )
+      });
+      
+      const bookedSlots = bookedAppointments.map(a => a.timeSlot);
+      
+      // Return available slots (exclude booked ones)
+      return allSlots.filter(slot => !bookedSlots.includes(slot));
+    } catch (error) {
+      console.error("Error in getDoctorAvailableSlots:", error);
+      throw error;
+    }
+  }
+  
+  // Join a video consultation
+  async joinVideoConsultation(appointmentId: number, userId: number): Promise<any> {
+    try {
+      const appointment = await db.query.appointments.findFirst({
+        where: eq(schema.appointments.id, appointmentId),
+        with: {
+          doctor: true,
+          user: true
+        }
+      });
+      
+      if (!appointment) {
+        throw new Error("Appointment not found");
+      }
+      
+      // Verify the user is either the doctor or the patient
+      if (appointment.userId !== userId && appointment.doctor.id !== userId) {
+        throw new Error("Unauthorized to join this consultation");
+      }
+      
+      // Update appointment status to "in-progress" if it was "scheduled"
+      if (appointment.status === "scheduled") {
+        await db.update(schema.appointments)
+          .set({ 
+            status: "in-progress",
+            updatedAt: new Date()
+          })
+          .where(eq(schema.appointments.id, appointmentId));
+      }
+      
+      return {
+        roomId: appointment.roomId || `mc-${Math.random().toString(36).substring(2, 11)}`,
+        doctorName: appointment.doctor?.name || 'Doctor',
+        patientName: appointment.user?.firstName || appointment.user?.username || 'Patient',
+        appointmentTime: appointment.timeSlot,
+        appointmentDate: appointment.appointmentDate ? new Date(appointment.appointmentDate).toISOString() : null
+      };
+    } catch (error) {
+      console.error("Error in joinVideoConsultation:", error);
       throw error;
     }
   }
