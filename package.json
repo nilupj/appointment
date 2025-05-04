@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@jitsi/react-sdk": "^1.4.4",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
     "@paypal/paypal-server-sdk": "^1.0.0",
