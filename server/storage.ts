@@ -1,6 +1,6 @@
 import { db } from "@db";
 import * as schema from "@shared/schema";
-import { eq, and, desc, asc, gte, lte, between, or, like } from "drizzle-orm";
+import { eq, and, desc, asc, gte, lte, between, or, like, sql } from "drizzle-orm";
 
 // Type definitions for frontend data
 type Specialist = {
