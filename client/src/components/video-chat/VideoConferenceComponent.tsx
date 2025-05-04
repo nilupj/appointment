@@ -19,7 +19,7 @@ export default function VideoConferenceComponent({
   appointmentId,
   onClose
 }: VideoConferenceProps) {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [isJoining, setIsJoining] = useState(false);
   const [isInCall, setIsInCall] = useState(false);
   const isDoctor = user?.role === 'doctor';
