@@ -142,7 +142,14 @@ const VideoConsult = () => {
                             <p className="font-semibold">₹{doctor.consultationFee}</p>
                           </div>
                           
-                          <Button className="primary-button w-full">Consult Now</Button>
+                          <Button 
+                            className="primary-button w-full"
+                            asChild
+                          >
+                            <a href={`/video-consult/room?doctor=${encodeURIComponent(doctor.name)}&appointmentId=${doctor.id}`}>
+                              Consult Now
+                            </a>
+                          </Button>
                           
                           <div className="mt-3">
                             <p className="text-xs text-center text-[#666666]">Next available slot: Today, {doctor.availableSlots[0]}</p>
@@ -199,8 +206,8 @@ const VideoConsult = () => {
                 <div className="rounded-full bg-blue-100 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <span className="text-primary font-bold text-xl">1</span>
                 </div>
-                <h3 className="font-semibold mb-2">Book an Appointment</h3>
-                <p className="text-sm text-[#666666]">Choose your preferred doctor and book a slot</p>
+                <h3 className="font-semibold mb-2">Choose a Doctor</h3>
+                <p className="text-sm text-[#666666]">Browse through our list of verified specialists and select your preferred doctor</p>
               </div>
               
               <div className="text-center">
@@ -208,7 +215,7 @@ const VideoConsult = () => {
                   <span className="text-primary font-bold text-xl">2</span>
                 </div>
                 <h3 className="font-semibold mb-2">Make Payment</h3>
-                <p className="text-sm text-[#666666]">Pay the consultation fee securely online</p>
+                <p className="text-sm text-[#666666]">Complete the payment securely through PayPal, credit card or UPI</p>
               </div>
               
               <div className="text-center">
@@ -216,7 +223,7 @@ const VideoConsult = () => {
                   <span className="text-primary font-bold text-xl">3</span>
                 </div>
                 <h3 className="font-semibold mb-2">Join Video Call</h3>
-                <p className="text-sm text-[#666666]">Connect with the doctor via video at the scheduled time</p>
+                <p className="text-sm text-[#666666]">Connect with your doctor instantly through our secure high-quality video platform</p>
               </div>
               
               <div className="text-center">
@@ -224,8 +231,17 @@ const VideoConsult = () => {
                   <span className="text-primary font-bold text-xl">4</span>
                 </div>
                 <h3 className="font-semibold mb-2">Get Prescription</h3>
-                <p className="text-sm text-[#666666]">Receive digital prescription and follow-up advice</p>
+                <p className="text-sm text-[#666666]">Receive digital prescription and personalized treatment plan after consultation</p>
               </div>
+            </div>
+            
+            <div className="mt-8 text-center">
+              <Button 
+                className="primary-button"
+                asChild
+              >
+                <a href="/payment">See Pricing Plans</a>
+              </Button>
             </div>
           </div>
           
