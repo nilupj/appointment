@@ -19,11 +19,12 @@ export default function VideoConferenceComponent({
   appointmentId,
   onClose
 }: VideoConferenceProps) {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const [isJoining, setIsJoining] = useState(false);
   const [isInCall, setIsInCall] = useState(false);
+  const isDoctor = user?.role === 'doctor';
   const [roomName, setRoomName] = useState(initialRoomName || '');
-  
+
   // Generate a random room name if not provided
   useEffect(() => {
     if (!initialRoomName) {
@@ -99,7 +100,7 @@ export default function VideoConferenceComponent({
                   <li>Prepare any questions you want to ask</li>
                 </ul>
               </div>
-              
+
               <div className="flex justify-center">
                 <Button 
                   onClick={handleJoinMeeting} 
@@ -178,7 +179,7 @@ export default function VideoConferenceComponent({
               });
             }}
           />
-          
+
           <div className="absolute top-4 right-4 z-10">
             <Button 
               variant="destructive" 
