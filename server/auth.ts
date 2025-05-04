@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { db } from "@db";
 import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { User } from "@shared/schema";
+import type { User as UserType } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "@db";
 
@@ -15,7 +15,7 @@ const PostgresSessionStore = connectPg(session);
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    interface User extends UserType {}
   }
 }
 

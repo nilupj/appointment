@@ -8,8 +8,13 @@ import FindDoctors from "@/pages/FindDoctors";
 import VideoConsult from "@/pages/VideoConsult";
 import Surgeries from "@/pages/Surgeries";
 import ArticleDetail from "@/pages/ArticleDetail";
+import AuthPage from "@/pages/auth-page";
+import UserProfile from "@/pages/UserProfile";
+import LabTests from "@/pages/LabTests";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
   return (
@@ -21,7 +26,10 @@ function Router() {
           <Route path="/find-doctors" component={FindDoctors} />
           <Route path="/video-consult" component={VideoConsult} />
           <Route path="/surgeries" component={Surgeries} />
+          <Route path="/lab-tests" component={LabTests} />
           <Route path="/articles/:id" component={ArticleDetail} />
+          <Route path="/auth" component={AuthPage} />
+          <ProtectedRoute path="/profile" component={UserProfile} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -33,8 +41,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
