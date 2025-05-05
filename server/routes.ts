@@ -202,6 +202,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!appointmentId) {
         return res.status(400).json({ message: "Appointment ID is required" });
       }
+
+      // Log the join attempt
+      console.log(`User ${req.user.id} attempting to join consultation ${appointmentId}`);
       
       const roomDetails = await storage.joinVideoConsultation(appointmentId, req.user.id);
       res.json(roomDetails);

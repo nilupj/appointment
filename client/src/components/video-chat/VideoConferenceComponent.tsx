@@ -29,10 +29,10 @@ export default function VideoConferenceComponent({
   useEffect(() => {
     if (!initialRoomName) {
       const timestamp = new Date().getTime();
-      const randomRoomId = `mediconnect-${user.id}-${timestamp}`;
+      const randomRoomId = `mediconnect-${user?.id}-${timestamp}`;
       setRoomName(randomRoomId);
     }
-  }, [initialRoomName, user.id]);
+  }, [initialRoomName, user?.id]);
 
   const handleJoinMeeting = async () => {
     setIsJoining(true);
@@ -40,7 +40,12 @@ export default function VideoConferenceComponent({
       if (!appointmentId) {
         throw new Error('No appointment ID provided');
       }
-      
+
+      // Add error handling
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
         method: 'POST',
@@ -49,7 +54,7 @@ export default function VideoConferenceComponent({
         },
         body: JSON.stringify({ appointmentId })
       });
-      
+
       if (!joinResponse.ok) {
         throw new Error('Failed to join consultation');
       }
