@@ -27,12 +27,13 @@ export default function VideoConferenceComponent({
 
   // Generate a random room name if not provided
   useEffect(() => {
-    if (!initialRoomName) {
+    if (!initialRoomName && appointmentId) {
       const timestamp = new Date().getTime();
-      const randomRoomId = `mediconnect-${user?.id}-${timestamp}`;
+      const randomRoomId = `mediconnect-${appointmentId}-${timestamp}`;
       setRoomName(randomRoomId);
+      console.log('Generated room name:', randomRoomId);
     }
-  }, [initialRoomName, user?.id]);
+  }, [initialRoomName, appointmentId]);
 
   const handleJoinMeeting = async () => {
     setIsJoining(true);
@@ -46,6 +47,10 @@ export default function VideoConferenceComponent({
         throw new Error('User not authenticated');
       }
 
+      // Check if user is admin/doctor
+      const isAuthorized = user.role === 'admin' || user.role === 'doctor';
+      console.log('User role:', user.role, 'Is authorized:', isAuthorized);
+
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
         method: 'POST',
@@ -56,15 +61,17 @@ export default function VideoConferenceComponent({
       });
 
       if (!joinResponse.ok) {
-        throw new Error('Failed to join consultation');
+        const errorData = await joinResponse.json();
+        throw new Error(errorData.message || 'Failed to join consultation');
       }
 
       const joinData = await joinResponse.json();
+      console.log('Join response:', joinData);
       setRoomName(joinData.roomId);
       setIsInCall(true);
     } catch (error) {
       console.error('Error joining consultation:', error);
-      // Show error toast here
+      alert(error.message || 'Failed to join consultation. Please try again.');
     } finally {
       setIsJoining(false);
     }
