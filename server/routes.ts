@@ -9,6 +9,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
   const apiPrefix = "/api";
 
+  // Admin authorization middleware
+  const isAdmin = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated() || req.user.role !== 'admin') {
+      return res.status(401).json({ message: "Admin access required" });
+    }
+    next();
+  };
+
   // Specialists routes
   app.get(`${apiPrefix}/specialists`, async (req, res) => {
     try {
@@ -81,22 +89,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { specialty, location, experience, availability, gender, fee } = req.query;
       const filters: any = {};
-      
+
       if (specialty && specialty !== 'all') filters.specialty = specialty as string;
       if (location && location !== 'all') filters.location = location as string;
       if (availability && availability !== 'all') filters.availability = availability as string;
       if (gender && gender !== 'all') filters.gender = gender as string;
-      
+
       if (experience) {
         const [min, max] = (experience as string).split(',').map(Number);
         filters.experience = { min, max };
       }
-      
+
       if (fee) {
         const [min, max] = (fee as string).split(',').map(Number);
         filters.fee = { min, max };
       }
-      
+
       const doctors = await storage.getDoctors(filters);
       res.json(doctors);
     } catch (error) {
@@ -110,15 +118,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { specialty, language, rating, availability } = req.query;
       const filters: any = {};
-      
+
       if (specialty && specialty !== 'all') filters.specialty = specialty as string;
       if (language && language !== 'all') filters.language = language as string;
       if (availability && availability !== 'all') filters.availability = availability as string;
-      
+
       if (rating) {
         filters.minRating = parseFloat(rating as string);
       }
-      
+
       const doctors = await storage.getVideoConsultDoctors(filters);
       res.json(doctors);
     } catch (error) {
@@ -126,20 +134,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch video consult doctors" });
     }
   });
-  
+
   // Video consultation appointment booking
   app.post(`${apiPrefix}/video-consult/book`, async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Authentication required" });
       }
-      
+
       const { doctorId, slot, date, patientNotes } = req.body;
-      
+
       if (!doctorId || !slot || !date) {
         return res.status(400).json({ message: "Doctor ID, slot time, and date are required" });
       }
-      
+
       // Create new appointment
       const appointment = await storage.createVideoConsultation({
         doctorId,
@@ -149,21 +157,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         patientNotes: patientNotes || "",
         status: "scheduled"
       });
-      
+
       res.status(201).json(appointment);
     } catch (error) {
       console.error("Error booking video consultation:", error);
       res.status(500).json({ message: "Failed to book consultation" });
     }
   });
-  
+
   // Get user's video consultation appointments
   app.get(`${apiPrefix}/video-consult/appointments`, async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Authentication required" });
       }
-      
+
       const appointments = await storage.getUserVideoConsultations(req.user.id);
       res.json(appointments);
     } catch (error) {
@@ -171,17 +179,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch consultations" });
     }
   });
-  
+
   // Get doctor's available slots
   app.get(`${apiPrefix}/video-consult/doctor/:id/slots`, async (req, res) => {
     try {
       const doctorId = parseInt(req.params.id);
       const date = req.query.date as string;
-      
+
       if (!date) {
         return res.status(400).json({ message: "Date parameter is required" });
       }
-      
+
       const availableSlots = await storage.getDoctorAvailableSlots(doctorId, date);
       res.json(availableSlots);
     } catch (error) {
@@ -262,23 +270,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch medical records" });
     }
   });
-  
+
   // Join video consultation room
   app.post(`${apiPrefix}/video-consult/join`, async (req, res) => {
     try {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Authentication required" });
       }
-      
+
       const { appointmentId } = req.body;
-      
+
       if (!appointmentId) {
         return res.status(400).json({ message: "Appointment ID is required" });
       }
 
       // Log the join attempt
       console.log(`User ${req.user.id} attempting to join consultation ${appointmentId}`);
-      
+
       const roomDetails = await storage.joinVideoConsultation(appointmentId, req.user.id);
       res.json(roomDetails);
     } catch (error) {
@@ -305,7 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!q || typeof q !== 'string' || q.length < 3) {
         return res.json([]);
       }
-      
+
       const suggestions = await storage.getSearchSuggestions(q);
       res.json(suggestions);
     } catch (error) {
@@ -318,15 +326,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(`${apiPrefix}/send-app-link`, async (req, res) => {
     try {
       const { phoneNumber } = req.body;
-      
+
       if (!phoneNumber || typeof phoneNumber !== 'string' || phoneNumber.length < 10) {
         return res.status(400).json({ message: "Invalid phone number" });
       }
-      
+
       // In a real implementation, this would send an SMS with a link to download the app
       // For now, we'll just simulate success
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       res.json({ success: true, message: "App link sent successfully" });
     } catch (error) {
       console.error("Error sending app link:", error);
@@ -349,11 +357,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lab Tests endpoints
-  app.get(`${apiPrefix}/admin/lab-tests`, async (req, res) => {
+  app.get(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== 'admin') {
-        return res.status(401).json({ message: "Admin access required" });
-      }
       const tests = await storage.getLabTests();
       res.json(tests);
     } catch (error) {
@@ -362,11 +367,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post(`${apiPrefix}/admin/lab-tests`, async (req, res) => {
+  app.post(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== 'admin') {
-        return res.status(401).json({ message: "Admin access required" });
-      }
       const test = await storage.createLabTest(req.body);
       res.status(201).json(test);
     } catch (error) {
@@ -375,11 +377,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put(`${apiPrefix}/admin/lab-tests/:id`, async (req, res) => {
+  app.put(`${apiPrefix}/admin/lab-tests/:id`, isAdmin, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== 'admin') {
-        return res.status(401).json({ message: "Admin access required" });
-      }
       const test = await storage.updateLabTest(parseInt(req.params.id), req.body);
       res.json(test);
     } catch (error) {
@@ -388,11 +387,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete(`${apiPrefix}/admin/lab-tests/:id`, async (req, res) => {
+  app.delete(`${apiPrefix}/admin/lab-tests/:id`, isAdmin, async (req, res) => {
     try {
-      if (!req.isAuthenticated() || req.user.role !== 'admin') {
-        return res.status(401).json({ message: "Admin access required" });
-      }
       await storage.deleteLabTest(parseInt(req.params.id));
       res.status(204).send();
     } catch (error) {

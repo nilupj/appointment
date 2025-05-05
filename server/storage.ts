@@ -666,15 +666,20 @@ async getLabTests(): Promise<any[]> {
 
 async createLabTest(data: any): Promise<any> {
   try {
+    if (!data.name || !data.price) {
+      throw new Error("Name and price are required");
+    }
     const [test] = await db.insert(schema.labTests).values({
       name: data.name,
-      description: data.description,
-      price: data.price,
-      discountedPrice: data.discountedPrice,
-      popularFor: data.popularFor,
-      preparationInfo: data.preparationInfo,
-      reportTime: data.reportTime,
-      homeCollection: data.homeCollection
+      description: data.description || '',
+      price: Number(data.price),
+      discountedPrice: data.discountedPrice ? Number(data.discountedPrice) : null,
+      popularFor: Array.isArray(data.popularFor) ? data.popularFor : [],
+      preparationInfo: data.preparationInfo || '',
+      reportTime: data.reportTime || '24-48 hours',
+      homeCollection: Boolean(data.homeCollection),
+      createdAt: new Date(),
+      updatedAt: new Date()
     }).returning();
     return test;
   } catch (error) {
