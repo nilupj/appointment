@@ -15,14 +15,19 @@ export default function VideoConsultRoom() {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const doctorName = searchParams.get('doctor') || 'Your Doctor';
-    const appointmentId = searchParams.get('appointmentId') || undefined;
+    const appointmentId = searchParams.get('appointmentId');
     const roomId = searchParams.get('roomId');
+    
+    if (!appointmentId) {
+      navigate('/video-consult');
+      return;
+    }
     
     setDoctorInfo({
       name: doctorName,
       appointmentId: appointmentId
     });
-  }, []);
+  }, [navigate]);
 
   const handleClose = () => {
     setShowAlert(true);

@@ -37,19 +37,17 @@ export default function VideoConferenceComponent({
   const handleJoinMeeting = async () => {
     setIsJoining(true);
     try {
-      // Always create a new appointment
-      const bookResponse = await fetch('/api/video-consult/book', {
+      if (!appointmentId) {
+        throw new Error('No appointment ID provided');
+      }
+      
+      // Join existing appointment
+      const joinResponse = await fetch('/api/video-consult/join', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          doctorId: 3, // Michael Chen's ID
-          userId: user.id,
-          slot: new Date().toLocaleTimeString(),
-          date: new Date().toISOString(),
-          status: 'scheduled'
-        })
+        body: JSON.stringify({ appointmentId })
       });
       
       if (!bookResponse.ok) {
