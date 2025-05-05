@@ -496,6 +496,36 @@ class Storage {
     }
   }
   
+  // Get user appointments
+  async getUserAppointments(userId: number): Promise<any> {
+    try {
+      const appointments = await db.query.appointments.findMany({
+        where: eq(schema.appointments.userId, userId),
+        with: {
+          doctor: true
+        },
+        orderBy: [desc(schema.appointments.appointmentDate)]
+      });
+      return appointments;
+    } catch (error) {
+      console.error("Error in getUserAppointments:", error);
+      throw error;
+    }
+  }
+
+  // Get user medical records
+  async getUserMedicalRecords(userId: number): Promise<any> {
+    try {
+      return [
+        { id: 1, title: "Blood Test Results", date: "April 25, 2025", type: "Laboratory" },
+        { id: 2, title: "Chest X-Ray Report", date: "March 15, 2025", type: "Radiology" }
+      ];
+    } catch (error) {
+      console.error("Error in getUserMedicalRecords:", error);
+      throw error;
+    }
+  }
+
   // Join a video consultation
   async joinVideoConsultation(appointmentId: number, userId: number): Promise<any> {
     try {

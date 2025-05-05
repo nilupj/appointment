@@ -189,6 +189,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch available slots" });
     }
   });
+
+  // Get user appointments
+  app.get(`${apiPrefix}/appointments`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      const appointments = await storage.getUserAppointments(req.user.id);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ message: "Failed to fetch appointments" });
+    }
+  });
+
+  // Get user medical records
+  app.get(`${apiPrefix}/medical-records`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      const records = await storage.getUserMedicalRecords(req.user.id);
+      res.json(records);
+    } catch (error) {
+      console.error("Error fetching medical records:", error);
+      res.status(500).json({ message: "Failed to fetch medical records" });
+    }
+  });
   
   // Join video consultation room
   app.post(`${apiPrefix}/video-consult/join`, async (req, res) => {
