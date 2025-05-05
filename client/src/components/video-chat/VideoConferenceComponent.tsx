@@ -41,23 +41,6 @@ export default function VideoConferenceComponent({
         throw new Error('No appointment ID provided');
       }
       
-      // Join existing appointment
-      const joinResponse = await fetch('/api/video-consult/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ appointmentId })
-      });
-      
-      if (!bookResponse.ok) {
-        throw new Error('Failed to create consultation');
-        return;
-      }
-      
-      const bookData = await bookResponse.json();
-      const currentAppointmentId = bookData.id;
-
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
         method: 'POST',
