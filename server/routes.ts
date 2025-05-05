@@ -303,6 +303,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
 
+  // Lab Tests endpoints
+  app.get(`${apiPrefix}/admin/lab-tests`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || req.user.role !== 'admin') {
+        return res.status(401).json({ message: "Admin access required" });
+      }
+      const tests = await storage.getLabTests();
+      res.json(tests);
+    } catch (error) {
+      console.error("Error fetching lab tests:", error);
+      res.status(500).json({ message: "Failed to fetch lab tests" });
+    }
+  });
+
+  app.post(`${apiPrefix}/admin/lab-tests`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || req.user.role !== 'admin') {
+        return res.status(401).json({ message: "Admin access required" });
+      }
+      const test = await storage.createLabTest(req.body);
+      res.status(201).json(test);
+    } catch (error) {
+      console.error("Error creating lab test:", error);
+      res.status(500).json({ message: "Failed to create lab test" });
+    }
+  });
+
+  app.put(`${apiPrefix}/admin/lab-tests/:id`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || req.user.role !== 'admin') {
+        return res.status(401).json({ message: "Admin access required" });
+      }
+      const test = await storage.updateLabTest(parseInt(req.params.id), req.body);
+      res.json(test);
+    } catch (error) {
+      console.error("Error updating lab test:", error);
+      res.status(500).json({ message: "Failed to update lab test" });
+    }
+  });
+
+  app.delete(`${apiPrefix}/admin/lab-tests/:id`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || req.user.role !== 'admin') {
+        return res.status(401).json({ message: "Admin access required" });
+      }
+      await storage.deleteLabTest(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting lab test:", error);
+      res.status(500).json({ message: "Failed to delete lab test" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

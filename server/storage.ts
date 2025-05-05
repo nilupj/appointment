@@ -599,7 +599,72 @@ class Storage {
   }
 
   // Search suggestions
-  async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
+  // Lab Tests methods
+async getLabTests(): Promise<any[]> {
+  try {
+    const tests = await db.query.labTests.findMany({
+      orderBy: [desc(schema.labTests.id)]
+    });
+    return tests;
+  } catch (error) {
+    console.error("Error in getLabTests:", error);
+    throw error;
+  }
+}
+
+async createLabTest(data: any): Promise<any> {
+  try {
+    const [test] = await db.insert(schema.labTests).values({
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      discountedPrice: data.discountedPrice,
+      popularFor: data.popularFor,
+      preparationInfo: data.preparationInfo,
+      reportTime: data.reportTime,
+      homeCollection: data.homeCollection
+    }).returning();
+    return test;
+  } catch (error) {
+    console.error("Error in createLabTest:", error);
+    throw error;
+  }
+}
+
+async updateLabTest(id: number, data: any): Promise<any> {
+  try {
+    const [test] = await db.update(schema.labTests)
+      .set({
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        discountedPrice: data.discountedPrice,
+        popularFor: data.popularFor,
+        preparationInfo: data.preparationInfo,
+        reportTime: data.reportTime,
+        homeCollection: data.homeCollection,
+        updatedAt: new Date()
+      })
+      .where(eq(schema.labTests.id, id))
+      .returning();
+    return test;
+  } catch (error) {
+    console.error("Error in updateLabTest:", error);
+    throw error;
+  }
+}
+
+async deleteLabTest(id: number): Promise<void> {
+  try {
+    await db.delete(schema.labTests)
+      .where(eq(schema.labTests.id, id));
+  } catch (error) {
+    console.error("Error in deleteLabTest:", error);
+    throw error;
+  }
+}
+
+async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
     try {
       // Search for doctors
       const doctors = await db.query.doctors.findMany({

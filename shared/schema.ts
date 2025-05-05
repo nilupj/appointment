@@ -91,6 +91,21 @@ export const testimonials = pgTable("testimonials", {
 });
 
 // Appointments table
+// Lab Tests table
+export const labTests = pgTable("lab_tests", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: integer("price").default(0),
+  discountedPrice: integer("discounted_price").default(0),
+  popularFor: text("popular_for").array(),
+  preparationInfo: text("preparation_info"),
+  reportTime: text("report_time"),
+  homeCollection: boolean("home_collection").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
