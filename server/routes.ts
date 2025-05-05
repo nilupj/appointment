@@ -204,6 +204,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create appointment
+  app.post(`${apiPrefix}/appointments`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      const appointment = await storage.createAppointment({
+        ...req.body,
+        userId: req.user.id
+      });
+      res.status(201).json(appointment);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ message: "Failed to create appointment" });
+    }
+  });
+
+  // Update appointment
+  app.put(`${apiPrefix}/appointments/:id`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      const appointment = await storage.updateAppointment(parseInt(req.params.id), req.body);
+      res.json(appointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ message: "Failed to update appointment" });
+    }
+  });
+
+  // Delete appointment
+  app.delete(`${apiPrefix}/appointments/:id`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      await storage.deleteAppointment(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ message: "Failed to delete appointment" });
+    }
+  });
+
   // Get user medical records
   app.get(`${apiPrefix}/medical-records`, async (req, res) => {
     try {

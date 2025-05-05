@@ -513,6 +513,58 @@ class Storage {
     }
   }
 
+  // Create appointment
+  async createAppointment(data: any): Promise<any> {
+    try {
+      const [appointment] = await db.insert(schema.appointments).values({
+        userId: data.userId,
+        doctorId: data.doctorId,
+        appointmentDate: new Date(data.appointmentDate),
+        status: data.status || 'pending',
+        type: data.type || 'in-person',
+        reason: data.reason,
+        notes: data.notes,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      return appointment;
+    } catch (error) {
+      console.error("Error in createAppointment:", error);
+      throw error;
+    }
+  }
+
+  // Update appointment
+  async updateAppointment(id: number, data: any): Promise<any> {
+    try {
+      const [appointment] = await db.update(schema.appointments)
+        .set({
+          status: data.status,
+          appointmentDate: data.appointmentDate ? new Date(data.appointmentDate) : undefined,
+          reason: data.reason,
+          notes: data.notes,
+          updatedAt: new Date()
+        })
+        .where(eq(schema.appointments.id, id))
+        .returning();
+      return appointment;
+    } catch (error) {
+      console.error("Error in updateAppointment:", error);
+      throw error;
+    }
+  }
+
+  // Delete appointment
+  async deleteAppointment(id: number): Promise<void> {
+    try {
+      await db.delete(schema.appointments)
+        .where(eq(schema.appointments.id, id));
+    } catch (error) {
+      console.error("Error in deleteAppointment:", error);
+      throw error;
+    }
+  }
+
   // Get user medical records
   async getUserMedicalRecords(userId: number): Promise<any> {
     try {
