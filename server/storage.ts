@@ -513,6 +513,23 @@ class Storage {
     }
   }
 
+  // Get all appointments (admin)
+  async getAllAppointments(): Promise<any> {
+    try {
+      const appointments = await db.query.appointments.findMany({
+        with: {
+          doctor: true,
+          user: true
+        },
+        orderBy: [desc(schema.appointments.appointmentDate)]
+      });
+      return appointments;
+    } catch (error) {
+      console.error("Error in getAllAppointments:", error);
+      throw error;
+    }
+  }
+
   // Create appointment
   async createAppointment(data: any): Promise<any> {
     try {

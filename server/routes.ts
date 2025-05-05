@@ -356,7 +356,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
 
-  // Lab Tests endpoints
+  // Admin dashboard endpoints
+  app.get(`${apiPrefix}/admin/appointments`, isAdmin, async (req, res) => {
+    try {
+      const appointments = await storage.getAllAppointments();
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ message: "Failed to fetch appointments" });
+    }
+  });
+
+  app.put(`${apiPrefix}/admin/appointments/:id`, isAdmin, async (req, res) => {
+    try {
+      const appointment = await storage.updateAppointment(parseInt(req.params.id), req.body);
+      res.json(appointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ message: "Failed to update appointment" });
+    }
+  });
+
+  app.delete(`${apiPrefix}/admin/appointments/:id`, isAdmin, async (req, res) => {
+    try {
+      await storage.deleteAppointment(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ message: "Failed to delete appointment" });
+    }
+  });
+
+  // Lab Tests endpoints 
   app.get(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
     try {
       const tests = await storage.getLabTests();
