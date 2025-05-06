@@ -47,9 +47,8 @@ export default function VideoConferenceComponent({
         throw new Error('User not authenticated');
       }
 
-      // Check if user is admin/doctor
-      const isAuthorized = user.role === 'admin' || user.role === 'doctor';
-      console.log('User role:', user.role, 'Is authorized:', isAuthorized);
+      // Any authenticated user (doctor, patient, admin) can join their consultations
+      console.log('User role:', user.role);
 
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
