@@ -16,9 +16,8 @@ export default function VideoConsultRoom() {
     const searchParams = new URLSearchParams(window.location.search);
     const doctorName = searchParams.get('doctor') || 'Your Doctor';
     const appointmentId = searchParams.get('appointmentId');
-    const roomId = searchParams.get('roomId');
     
-    if (!appointmentId) {
+    if (!appointmentId || isNaN(parseInt(appointmentId))) {
       navigate('/video-consult');
       return;
     }
