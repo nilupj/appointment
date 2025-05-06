@@ -23,6 +23,34 @@ const VideoConsult = () => {
     queryKey: ['/api/video-consult-doctors'],
   });
 
+  const bookAppointment = async (doctorId: number, slot: string) => {
+    try {
+      const date = new Date().toISOString().split('T')[0]; // Today's date
+      const response = await fetch('/api/video-consult/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          doctorId,
+          slot,
+          date,
+          patientNotes: ''
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to book appointment');
+      }
+
+      const appointment = await response.json();
+      window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctors?.find(d => d.id === doctorId)?.name || '')}&appointmentId=${appointment.id}`;
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      alert('Failed to book appointment. Please try again.');
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -144,11 +172,9 @@ const VideoConsult = () => {
                           
                           <Button 
                             className="primary-button w-full"
-                            asChild
+                            onClick={() => bookAppointment(doctor.id, doctor.availableSlots[0])}
                           >
-                            <a href={`/video-consult/room?doctor=${encodeURIComponent(doctor.name)}&appointmentId=${doctor.id}`}>
-                              Consult Now
-                            </a>
+                            Book Consultation
                           </Button>
                           
                           <div className="mt-3">
