@@ -291,7 +291,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(roomDetails);
     } catch (error) {
       console.error("Error joining video consultation:", error);
-      res.status(500).json({ message: "Failed to join consultation" });
+      const message = error.message === "Appointment not found" 
+        ? "No appointment found with this ID. Please book an appointment first."
+        : "Failed to join consultation";
+      res.status(404).json({ message });
     }
   });
 
