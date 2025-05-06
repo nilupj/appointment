@@ -279,19 +279,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { appointmentId } = req.body;
+      const userId = req.user.id;
 
       if (!appointmentId) {
         return res.status(400).json({ message: "Appointment ID is required" });
       }
 
       // Log the join attempt
-      console.log(`User ${req.user.id} attempting to join consultation ${appointmentId}`);
+      console.log(`User ${userId} attempting to join consultation ${appointmentId}`);
 
-      const roomDetails = await storage.joinVideoConsultation(appointmentId, req.user.id);
+      const appointment = await storage.getVideoConsultationById(appointmentId);
+      if (!appointment) {
+        throw new Error("Appointment not found");
+      }
+
+      // Check if user is a doctor
+      const isDoctor = await storage.getDoctorByUserId(userId); // Placeholder function
+
+      // Verify the user is either the doctor or the patient
+      if (appointment.userId !== userId && (!isDoctor || appointment.doctorId !== isDoctor.id)) {
+        throw new Error("Unauthorized to join this consultation");
+      }
+
+      const roomDetails = await storage.joinVideoConsultation(appointmentId, userId);
       res.json(roomDetails);
     } catch (error) {
       console.error("Error joining video consultation:", error);
-      const message = error.message === "Appointment not found" 
+      const message = error.message === "Appointment not found"
         ? "No appointment found with this ID. Please book an appointment first."
         : "Failed to join consultation";
       res.status(404).json({ message });
@@ -390,7 +404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Lab Tests endpoints 
+  // Lab Tests endpoints
   app.get(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
     try {
       const tests = await storage.getLabTests();
@@ -430,6 +444,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete lab test" });
     }
   });
+
+
+  // --- Added Doctor Management Endpoints (Placeholders) ---
+  app.get(`${apiPrefix}/admin/doctors`, isAdmin, async (req, res) => {
+    try {
+      const doctors = await storage.getAllDoctors(); // Placeholder function
+      res.json(doctors);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+      res.status(500).json({ message: "Failed to fetch doctors" });
+    }
+  });
+
+  app.post(`${apiPrefix}/admin/doctors`, isAdmin, async (req, res) => {
+    try {
+      const newDoctor = await storage.addDoctor(req.body); // Placeholder function
+      res.status(201).json(newDoctor);
+    } catch (error) {
+      console.error("Error adding doctor:", error);
+      res.status(500).json({ message: "Failed to add doctor" });
+    }
+  });
+
+  // ... other doctor management endpoints (update, delete, etc.) would go here ...
+
 
   const httpServer = createServer(app);
 

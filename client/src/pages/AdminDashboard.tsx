@@ -80,6 +80,7 @@ export default function AdminDashboard() {
       <Tabs defaultValue="appointments">
         <TabsList>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsTrigger value="doctors">Doctors</TabsTrigger>
           <TabsTrigger value="tests">Lab Tests</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
@@ -141,6 +142,65 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <DataTable columns={columns} data={tests} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="doctors">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Doctors Management</CardTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Add Doctor</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Doctor</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Doctor Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="specialty"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Specialty</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="experience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Experience (years)</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Add Doctor</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <DataTable columns={doctorColumns} data={doctors || []} />
             </CardContent>
           </Card>
         </TabsContent>
