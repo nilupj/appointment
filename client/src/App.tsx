@@ -18,6 +18,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
+import AdminDashboard from './pages/AdminDashboard';
 
 function Router() {
   return (
@@ -35,6 +36,14 @@ function Router() {
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/profile" component={UserProfile} />
           <ProtectedRoute path="/payment" component={PaymentPage} />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route component={NotFound} />
         </Switch>
       </main>
