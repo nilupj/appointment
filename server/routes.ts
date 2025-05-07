@@ -205,10 +205,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
       const appointments = await storage.getUserAppointments(req.user.id);
+      if (!appointments) {
+        return res.status(404).json({ message: "No appointments found" });
+      }
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
       res.status(500).json({ message: "Failed to fetch appointments" });
+    }
+  });
+
+  // Get single appointment
+  app.get(`${apiPrefix}/appointments/:id`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      const appointment = await storage.getAppointmentById(parseInt(req.params.id));
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+      res.json(appointment);
+    } catch (error) {
+      console.error("Error fetching appointment:", error);
+      res.status(500).json({ message: "Failed to fetch appointment" });
     }
   });
 
