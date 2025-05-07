@@ -25,7 +25,7 @@ const VideoConsult = () => {
 
   const bookAppointment = async (doctorId: number, slot: string) => {
     try {
-      const date = new Date().toISOString().split('T')[0]; // Today's date
+      const date = new Date().toISOString().split('T')[0];
       const response = await fetch('/api/video-consult/book', {
         method: 'POST',
         headers: {
@@ -33,19 +33,23 @@ const VideoConsult = () => {
         },
         body: JSON.stringify({
           doctorId,
-          slot,
-          date,
+          timeSlot: slot,
+          appointmentDate: date,
+          type: 'video',
+          status: 'scheduled',
           patientNotes: ''
         })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to book appointment');
+        const error = await response.text();
+        throw new Error(error || 'Failed to book appointment');
       }
 
       const appointment = await response.json();
-      if (appointment && appointment.id) {
-        window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctors?.find(d => d.id === doctorId)?.name || '')}&appointmentId=${appointment.id}`;
+      if (appointment?.id) {
+        const doctorName = doctors?.find(d => d.id === doctorId)?.name || '';
+        window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctorName)}&appointmentId=${appointment.id}`;
       } else {
         throw new Error('Invalid appointment response');
       }
