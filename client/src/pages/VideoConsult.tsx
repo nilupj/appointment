@@ -44,7 +44,11 @@ const VideoConsult = () => {
       }
 
       const appointment = await response.json();
-      window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctors?.find(d => d.id === doctorId)?.name || '')}&appointmentId=${appointment.id}`;
+      if (appointment && appointment.id) {
+        window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctors?.find(d => d.id === doctorId)?.name || '')}&appointmentId=${appointment.id}`;
+      } else {
+        throw new Error('Invalid appointment response');
+      }
     } catch (error) {
       console.error('Error booking appointment:', error);
       alert('Failed to book appointment. Please try again.');
