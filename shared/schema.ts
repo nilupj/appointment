@@ -117,6 +117,7 @@ export const appointments = pgTable("appointments", {
   notes: text("notes"),
   roomId: text("room_id"),
   timeSlot: text("time_slot"),
+  patientNotes: text("patient_notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
