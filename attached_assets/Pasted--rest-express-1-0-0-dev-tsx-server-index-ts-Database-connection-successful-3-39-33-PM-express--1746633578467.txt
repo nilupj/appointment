@@ -1,0 +1,439 @@
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Database connection successful
+3:39:33 PM [express] serving on port 5000
+3:39:49 PM [express] GET /api/user 401 in 216ms :: {"message":"Not authenticated"}
+3:39:49 PM [express] GET /api/specialists 304 in 439ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+3:39:49 PM [express] GET /api/clinic-specialties 304 in 428ms :: [{"id":1,"name":"Period doubts or P…
+3:39:49 PM [express] GET /api/articles 304 in 452ms :: [{"id":3,"title":"The Importance of Regular E…
+3:39:49 PM [express] GET /api/testimonials 304 in 432ms :: [{"id":1,"text":"Very helpful! For more t…
+3:39:49 PM [express] GET /api/user 401 in 215ms :: {"message":"Not authenticated"}
+3:39:49 PM [express] GET /api/specialists 200 in 449ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+3:39:49 PM [express] GET /api/articles 200 in 428ms :: [{"id":3,"title":"The Importance of Regular E…
+3:39:49 PM [express] GET /api/clinic-specialties 200 in 450ms :: [{"id":1,"name":"Period doubts or P…
+3:39:49 PM [express] GET /api/testimonials 200 in 431ms :: [{"id":1,"text":"Very helpful! For more t…
+3:39:49 PM [express] GET /api/specialists 200 in 429ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+3:39:50 PM [express] GET /api/clinic-specialties 200 in 452ms :: [{"id":1,"name":"Period doubts or P…
+3:39:50 PM [express] GET /api/articles 200 in 439ms :: [{"id":3,"title":"The Importance of Regular E…
+3:39:50 PM [express] GET /api/user 401 in 215ms :: {"message":"Not authenticated"}
+3:39:50 PM [express] GET /api/testimonials 200 in 432ms :: [{"id":1,"text":"Very helpful! For more t…
+3:39:50 PM [express] GET /api/user 200 in 645ms :: {"id":1,"username":"admin","password":"e5ccd10a90…
+3:39:50 PM [express] GET /api/video-consult-doctors 200 in 904ms :: [{"id":3,"name":"Michael Chen","…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:39:55 PM [express] POST /api/video-consult/book 500 in 1133ms :: {"message":"Failed to book consul…
+3:40:00 PM [express] GET /api/surgeries 200 in 894ms :: [{"id":1,"name":"Laser Eye Surgery (LASIK)",…
+3:42:27 PM [express] POST /api/logout 200 in 1759ms :: {"message":"Logged out successfully"}
+3:42:27 PM [express] GET /api/user 401 in 434ms :: {"message":"Not authenticated"}
+3:42:29 PM [express] GET /api/clinic-specialties 304 in 652ms :: [{"id":1,"name":"Period doubts or P…
+3:42:30 PM [express] GET /api/specialists 304 in 1314ms :: [{"id":1,"name":"Period doubts or Pregnan…
+3:42:30 PM [express] GET /api/articles 304 in 1316ms :: [{"id":3,"title":"The Importance of Regular …
+3:42:30 PM [express] GET /api/testimonials 304 in 1308ms :: [{"id":1,"text":"Very helpful! For more …
+3:42:42 PM [express] GET /api/user 401 in 435ms :: {"message":"Not authenticated"}
+3:42:46 PM [express] POST /api/login 200 in 1131ms :: {"id":1,"username":"admin","password":"e5ccd10…
+3:42:47 PM [express] GET /api/testimonials 304 in 872ms :: [{"id":1,"text":"Very helpful! For more t…
+3:42:47 PM [express] GET /api/specialists 304 in 873ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+3:42:47 PM [express] GET /api/clinic-specialties 304 in 875ms :: [{"id":1,"name":"Period doubts or P…
+3:42:47 PM [express] GET /api/articles 304 in 883ms :: [{"id":3,"title":"The Importance of Regular E…
+3:42:49 PM [express] GET /api/video-consult-doctors 200 in 977ms :: [{"id":3,"name":"Michael Chen","…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:42:51 PM [express] POST /api/video-consult/book 500 in 1147ms :: {"message":"Failed to book consul…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:43:13 PM [express] POST /api/video-consult/book 500 in 2409ms :: {"message":"Failed to book consul…
+3:46:50 PM [express] GET /api/user 200 in 701ms :: {"id":1,"username":"admin","password":"e5ccd10a90…
+3:46:50 PM [express] GET /api/clinic-specialties 304 in 873ms :: [{"id":1,"name":"Period doubts or P…
+3:46:50 PM [express] GET /api/testimonials 304 in 875ms :: [{"id":1,"text":"Very helpful! For more t…
+3:46:50 PM [express] GET /api/articles 304 in 881ms :: [{"id":3,"title":"The Importance of Regular E…
+3:46:50 PM [express] GET /api/specialists 304 in 934ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+3:47:12 PM [express] GET /api/doctors 200 in 1535ms :: [{"id":1,"name":"John Williams","specialty":"…
+3:47:16 PM [express] GET /api/video-consult-doctors 304 in 870ms :: [{"id":3,"name":"Michael Chen","…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:47:20 PM [express] POST /api/video-consult/book 500 in 1735ms :: {"message":"Failed to book consul…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:52:38 PM [express] POST /api/video-consult/book 500 in 2465ms :: {"message":"Failed to book consul…
+3:52:59 PM [express] GET /api/specialists 304 in 1612ms :: [{"id":1,"name":"Period doubts or Pregnan…
+3:52:59 PM [express] GET /api/testimonials 304 in 1520ms :: [{"id":1,"text":"Very helpful! For more …
+3:52:59 PM [express] GET /api/articles 304 in 1534ms :: [{"id":3,"title":"The Importance of Regular …
+3:52:59 PM [express] GET /api/clinic-specialties 304 in 1542ms :: [{"id":1,"name":"Period doubts or …
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:54:03 PM [express] POST /api/video-consult/book 500 in 2434ms :: {"message":"Failed to book consul…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+3:54:04 PM [express] POST /api/video-consult/book 500 in 1820ms :: {"message":"Failed to book consul…
+3:54:13 PM [express] GET /api/doctors 200 in 873ms :: [{"id":1,"name":"John Williams","specialty":"P…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:419:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
