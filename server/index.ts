@@ -1,10 +1,29 @@
 import express, { type Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
-app.use(express.json());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later"
+});
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
+
+app.use(express.json({ limit: "10kb" })); // Limit body size
 app.use(express.urlencoded({ extended: false }));
+app.use("/api/", limiter); // Apply rate limiting to API routes
 
 app.use((req, res, next) => {
   const start = Date.now();
