@@ -32,11 +32,9 @@ const VideoConsult = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          doctorId,
-          timeSlot: slot,
-          appointmentDate: date,
-          type: 'video',
-          status: 'scheduled',
+          doctorId: doctorId,
+          slot: slot,
+          date: date,
           patientNotes: ''
         })
       });
