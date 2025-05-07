@@ -1,0 +1,98 @@
+Thanks! Since you're running **Jitsi Meet on Replit**, and you're seeing the **“Waiting for an authenticated user…”** message, here's a **step-by-step guide to fix it** specifically for Replit environments:
+
+---
+
+## 🛠 Problem
+
+Your Replit-hosted Jitsi instance is likely using a **“secure domain”** configuration, which **requires a moderator (authenticated user) to join first**.
+
+This works by requiring:
+
+* The doctor to **log in with a username and password**
+* Or by using a **JWT token** if you're on Jitsi-as-a-Service (JaaS)
+
+---
+
+## ✅ Solution (Replit Setup)
+
+### ▶️ Option 1: Allow Anyone to Start the Meeting (Disable Auth)
+
+If you **don’t need authentication** (e.g., testing or MVP):
+
+1. In your Replit files, look for the Jitsi config file:
+
+   * Likely in: `/etc/prosody/conf.avail/yourdomain.cfg.lua` (or similar)
+   * In Replit, this might be mounted under a different path — look in the server setup code or `.sh` files
+
+2. **Change this line**:
+
+   ```lua
+   authentication = "internal_hashed"
+   ```
+
+   ➤ To:
+
+   ```lua
+   authentication = "anonymous"
+   ```
+
+3. Make sure guest domain is configured:
+
+   ```lua
+   VirtualHost "guest.yourdomain.com"
+     authentication = "anonymous"
+   ```
+
+4. Restart services in your Replit `server.js` or `start.sh`:
+
+   ```bash
+   sudo service prosody restart
+   sudo service jicofo restart
+   sudo service jitsi-videobridge2 restart
+   ```
+
+Now anyone can start a meeting without needing to log in.
+
+---
+
+### ▶️ Option 2: Let Doctor Log In First (Keep Auth Secure)
+
+If you want only the **doctor to be moderator** (recommended for real apps):
+
+1. Create a moderator account:
+
+   ```bash
+   sudo prosodyctl register doctor yourdomain.com strongpassword
+   ```
+
+2. When doctor joins, they should click "Log in" and enter:
+
+   * Username: `doctor`
+   * Password: `strongpassword`
+
+3. Patients will wait until the doctor (moderator) starts the call.
+
+---
+
+### 🔒 Optional (Advanced): Use JWT for Auth in Replit
+
+If you're using [Jitsi-as-a-Service (JaaS)](https://jaas.8x8.vc/), you can:
+
+* Pass a **JWT token** to authenticate users (doctor as moderator)
+* Configure roles and user types via token claims
+
+Let me know if you're on **JaaS** and want help generating or integrating JWTs.
+
+---
+
+## ✅ Summary
+
+| Goal                  | Action                                                              |
+| --------------------- | ------------------------------------------------------------------- |
+| Anyone can join       | Set `authentication = "anonymous"`                                  |
+| Doctor logs in first  | Keep `authentication = "internal_hashed"` and create doctor account |
+| Use token-based login | Use **JWT with JaaS**                                               |
+
+---
+
+Would you prefer to disable auth for now or set up a doctor login securely?
