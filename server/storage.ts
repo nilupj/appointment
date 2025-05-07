@@ -418,9 +418,6 @@ class Storage {
       
       // Combine date and time slot into a proper timestamp
       const timeSlot = data.slot;
-      const datePart = new Date(data.date).toISOString().split('T')[0];
-      const appointmentDate = new Date(`${datePart}T00:00:00.000Z`);
-
       // Set appointment time to start of day since time is handled separately
       const appointmentDate = new Date(data.date);
       appointmentDate.setHours(0, 0, 0, 0);
