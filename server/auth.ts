@@ -89,25 +89,8 @@ export function setupAuth(app: Express) {
   });
 
   // Authentication routes
-  function isPasswordValid(password: string): boolean {
-  const minLength = 8;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  
-  return password.length >= minLength && hasUpperCase && hasLowerCase && 
-         hasNumbers && hasSpecialChar;
-}
-
-app.post("/api/register", async (req, res) => {
+  app.post("/api/register", async (req, res) => {
     try {
-      if (!isPasswordValid(req.body.password)) {
-        return res.status(400).json({ 
-          message: "Password must be at least 8 characters long and contain uppercase, lowercase, numbers and special characters" 
-        });
-      }
-
       const existingUser = await db.query.users.findFirst({
         where: eq(users.username, req.body.username)
       });
