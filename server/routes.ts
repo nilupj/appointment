@@ -285,22 +285,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Appointment ID is required" });
       }
 
-      // Log the join attempt
-      console.log(`User ${userId} attempting to join consultation ${appointmentId}`);
-
-      const appointment = await storage.getVideoConsultationById(appointmentId);
-      if (!appointment) {
-        throw new Error("Appointment not found");
-      }
-
-      // Check if user is a doctor
-      const isDoctor = await storage.getDoctorByUserId(userId); // Placeholder function
-
-      // Verify the user is either the doctor or the patient
-      if (appointment.userId !== userId && (!isDoctor || appointment.doctorId !== isDoctor.id)) {
-        throw new Error("Unauthorized to join this consultation");
-      }
-
       const roomDetails = await storage.joinVideoConsultation(appointmentId, userId);
       res.json(roomDetails);
     } catch (error) {
