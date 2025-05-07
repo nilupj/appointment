@@ -631,11 +631,7 @@ class Storage {
       const appointment = await db.query.appointments.findFirst({
         where: eq(schema.appointments.id, appointmentId),
         with: {
-          doctor: {
-            with: {
-              specialty: true
-            }
-          },
+          doctor: true,
           user: true
         }
       });
@@ -644,11 +640,8 @@ class Storage {
         throw new Error("Appointment not found");
       }
       
-      // Get doctor details to verify access
-      const doctor = await this.getDoctorByUserId(userId);
-      
       // Verify the user is either the doctor or the patient
-      if (appointment.userId !== userId && (!doctor || appointment.doctorId !== doctor.id)) {
+      if (appointment.userId !== userId && appointment.doctor.id !== userId) {
         throw new Error("Unauthorized to join this consultation");
       }
       
