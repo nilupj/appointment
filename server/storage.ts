@@ -612,6 +612,19 @@ class Storage {
     }
   }
 
+  // Get doctor by user ID
+  async getDoctorByUserId(userId: number): Promise<any> {
+    try {
+      const doctor = await db.query.doctors.findFirst({
+        where: eq(schema.doctors.userId, userId)
+      });
+      return doctor;
+    } catch (error) {
+      console.error("Error in getDoctorByUserId:", error);
+      throw error;
+    }
+  }
+
   // Join a video consultation
   async joinVideoConsultation(appointmentId: number, userId: number): Promise<any> {
     try {
