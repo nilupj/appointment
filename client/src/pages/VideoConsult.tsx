@@ -53,12 +53,17 @@ const VideoConsult = () => {
       }
     } catch (error) {
       console.error('Error booking appointment:', error);
-      alert('Failed to book appointment. Please try again.');
+      const errorMessage = error.message === 'Authentication required' 
+        ? 'Please login to book an appointment' 
+        : 'Failed to book appointment. Please try again.';
+      alert(errorMessage);
     }
   };
 
   // Assuming 'user' is available in the component's scope.  This would need to be fetched/provided.
-  const user = true; // Replace with actual authentication check
+  const { data: user } = useQuery({
+    queryKey: ['/api/user'],
+  });
 
   return (
     <>
