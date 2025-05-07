@@ -595,36 +595,6 @@ class Storage {
     }
   }
 
-  // Get video consultation by ID
-  async getVideoConsultationById(id: number): Promise<any> {
-    try {
-      const appointment = await db.query.appointments.findFirst({
-        where: eq(schema.appointments.id, id),
-        with: {
-          doctor: true,
-          user: true
-        }
-      });
-      return appointment;
-    } catch (error) {
-      console.error("Error in getVideoConsultationById:", error);
-      throw error;
-    }
-  }
-
-  // Get doctor by user ID
-  async getDoctorByUserId(userId: number): Promise<any> {
-    try {
-      const doctor = await db.query.doctors.findFirst({
-        where: eq(schema.doctors.userId, userId)
-      });
-      return doctor;
-    } catch (error) {
-      console.error("Error in getDoctorByUserId:", error);
-      throw error;
-    }
-  }
-
   // Join a video consultation
   async joinVideoConsultation(appointmentId: number, userId: number): Promise<any> {
     try {
