@@ -1,23 +1,53 @@
 
-export const columns = [
+import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+
+export const columns: ColumnDef<any>[] = [
   {
-    id: "patientName",
-    header: "Patient",
-    cell: (row: any) => row.patientName
+    accessorKey: "id",
+    header: "ID"
   },
   {
-    id: "doctorName", 
-    header: "Doctor",
-    cell: (row: any) => row.doctorName
+    accessorKey: "doctorId",
+    header: "Doctor ID"
   },
   {
-    id: "date",
+    accessorKey: "userId",
+    header: "Patient ID"
+  },
+  {
+    accessorKey: "appointmentDate",
     header: "Date",
-    cell: (row: any) => new Date(row.date).toLocaleDateString()
+    cell: ({ row }) => {
+      const date = new Date(row.original.appointmentDate);
+      return date.toLocaleDateString();
+    }
   },
   {
-    id: "status",
-    header: "Status",
-    cell: (row: any) => row.status
+    accessorKey: "timeSlot",
+    header: "Time Slot"
+  },
+  {
+    accessorKey: "status",
+    header: "Status"
+  },
+  {
+    accessorKey: "type",
+    header: "Type"
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => row.original.onUpdate?.(row.original.id)}>
+            Update
+          </Button>
+          <Button variant="destructive" size="sm" onClick={() => row.original.onDelete?.(row.original.id)}>
+            Delete
+          </Button>
+        </div>
+      );
+    }
   }
 ];

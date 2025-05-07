@@ -13,20 +13,45 @@ export default function VideoConsultRoom() {
   
   // Parse query parameters to get doctor info
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const doctorName = searchParams.get('doctor') || 'Your Doctor';
-    const appointmentId = searchParams.get('appointmentId');
-    
-    if (!appointmentId || isNaN(parseInt(appointmentId))) {
-      navigate('/video-consult');
-      return;
+    async function joinRoom() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const doctorName = searchParams.get('doctor') || 'Your Doctor';
+      const appointmentId = searchParams.get('appointmentId');
+      
+      if (!appointmentId || isNaN(parseInt(appointmentId))) {
+        navigate('/video-consult');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/video-consult/join', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ appointmentId: parseInt(appointmentId) })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to join consultation');
+        }
+
+        const data = await response.json();
+        setDoctorInfo({
+          name: doctorName,
+          appointmentId: appointmentId,
+          roomId: data.roomId
+        });
+      } catch (error) {
+        console.error('Error joining room:', error);
+        navigate('/video-consult');
+      }
     }
-    
-    setDoctorInfo({
-      name: doctorName,
-      appointmentId: appointmentId
-    });
-  }, [navigate]);
+
+    if (user) {
+      joinRoom();
+    }
+  }, [navigate, user]);
 
   const handleClose = () => {
     setShowAlert(true);
