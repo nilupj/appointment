@@ -115,7 +115,6 @@ export const appointments = pgTable("appointments", {
   type: text("type").default("in-person").notNull(), // in-person or video
   reason: text("reason"),
   notes: text("notes"),
-  roomId: text("room_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
