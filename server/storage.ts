@@ -616,7 +616,7 @@ class Storage {
   async getDoctorByUserId(userId: number): Promise<any> {
     try {
       const doctor = await db.query.doctors.findFirst({
-        where: (doctors) => eq(doctors.userId, userId)
+        where: eq(schema.doctors.userId, userId)
       });
       return doctor;
     } catch (error) {

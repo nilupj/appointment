@@ -31,6 +31,7 @@ export const specialties = pgTable("specialties", {
 // Doctors table
 export const doctors = pgTable("doctors", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
   name: text("name").notNull(),
   specialtyId: integer("specialty_id").references(() => specialties.id),
   imageSrc: text("image_src"),
