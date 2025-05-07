@@ -421,13 +421,17 @@ class Storage {
       const datePart = new Date(data.date).toISOString().split('T')[0];
       const appointmentDate = new Date(`${datePart}T00:00:00.000Z`);
 
+      // Set appointment time to start of day since time is handled separately
+      const appointmentDate = new Date(data.date);
+      appointmentDate.setHours(0, 0, 0, 0);
+
       const [appointment] = await db.insert(schema.appointments).values({
         doctorId: data.doctorId,
         userId: data.userId,
         appointmentDate: appointmentDate,
-        timeSlot: timeSlot, // Store time slot separately
-        patientNotes: data.patientNotes,
-        status: data.status,
+        timeSlot: data.slot,
+        patientNotes: data.patientNotes || '',
+        status: data.status || 'scheduled',
         roomId: roomId,
         createdAt: new Date(),
         updatedAt: new Date()
