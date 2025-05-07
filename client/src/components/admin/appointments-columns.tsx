@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -8,24 +9,19 @@ export const columns: ColumnDef<any>[] = [
     header: "ID"
   },
   {
-    accessorKey: "doctorId",
-    header: "Doctor ID"
+    accessorKey: "user.username",
+    header: "Patient"
   },
   {
-    accessorKey: "userId",
-    header: "Patient ID"
+    accessorKey: "doctor.name",
+    header: "Doctor"
   },
   {
     accessorKey: "appointmentDate",
     header: "Date",
     cell: ({ row }) => {
-      const date = new Date(row.original.appointmentDate);
-      return date.toLocaleDateString();
+      return format(new Date(row.getValue("appointmentDate")), "PPp");
     }
-  },
-  {
-    accessorKey: "timeSlot",
-    header: "Time Slot"
   },
   {
     accessorKey: "status",
@@ -37,13 +33,22 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       return (
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => row.original.onUpdate?.(row.original.id)}>
-            Update
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => row.original.onEdit?.(row.original)}
+          >
+            Edit
           </Button>
-          <Button variant="destructive" size="sm" onClick={() => row.original.onDelete?.(row.original.id)}>
+          <Button 
+            variant="destructive" 
+            size="sm" 
+            onClick={() => row.original.onDelete?.(row.original.id)}
+          >
             Delete
           </Button>
         </div>

@@ -8,20 +8,32 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
+import { useAuth } from "@/hooks/use-auth";
+import { useState } from "react";
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [editingAppointment, setEditingAppointment] = useState(null);
   const form = useForm();
+
+  // Redirect if not admin
+  if (!user || user.role !== 'admin') {
+    return <div>Access denied. Admin only.</div>;
+  }
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['/api/admin/appointments'],
+    enabled: user?.role === 'admin'
   });
 
-  const { data: tests = [] } = useQuery({
-    queryKey: ['/api/admin/lab-tests'],
+  const { data: doctors = [] } = useQuery({
+    queryKey: ['/api/admin/doctors'],
+    enabled: user?.role === 'admin'
   });
 
   const createAppointmentMutation = useMutation({
@@ -53,6 +65,7 @@ export default function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries(['/api/admin/appointments']);
       toast({ title: "Success", description: "Appointment updated" });
+      setEditingAppointment(null);
     },
   });
 
@@ -70,8 +83,29 @@ export default function AdminDashboard() {
   });
 
   const onSubmit = (data) => {
-    createAppointmentMutation.mutate(data);
+    if (editingAppointment) {
+      updateAppointmentMutation.mutate({ id: editingAppointment.id, data });
+    } else {
+      createAppointmentMutation.mutate(data);
+    }
   };
+
+  const handleEdit = (appointment) => {
+    setEditingAppointment(appointment);
+    form.reset(appointment);
+  };
+
+  const handleDelete = (id) => {
+    if (confirm('Are you sure you want to delete this appointment?')) {
+      deleteAppointmentMutation.mutate(id);
+    }
+  };
+
+  const enhancedAppointments = appointments.map(appointment => ({
+    ...appointment,
+    onEdit: handleEdit,
+    onDelete: handleDelete
+  }));
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -81,7 +115,6 @@ export default function AdminDashboard() {
         <TabsList>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="doctors">Doctors</TabsTrigger>
-          <TabsTrigger value="tests">Lab Tests</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
           <Card>
@@ -93,34 +126,66 @@ export default function AdminDashboard() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Appointment</DialogTitle>
+                    <DialogTitle>
+                      {editingAppointment ? 'Edit Appointment' : 'Create New Appointment'}
+                    </DialogTitle>
                   </DialogHeader>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                       control={form.control}
-                      name="patientName"
+                      name="doctorId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Patient Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
+                          <FormLabel>Doctor</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select doctor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {doctors.map((doctor) => (
+                                <SelectItem key={doctor.id} value={doctor.id}>
+                                  {doctor.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </FormItem>
                       )}
                     />
                     <FormField
                       control={form.control}
-                      name="date"
+                      name="appointmentDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Date</FormLabel>
+                          <FormLabel>Date & Time</FormLabel>
                           <FormControl>
                             <Input type="datetime-local" {...field} />
                           </FormControl>
                         </FormItem>
                       )}
                     />
-                    <Button type="submit">Create</Button>
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Status</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="confirmed">Confirmed</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">
+                      {editingAppointment ? 'Update' : 'Create'}
+                    </Button>
                   </form>
                 </DialogContent>
               </Dialog>
@@ -128,79 +193,8 @@ export default function AdminDashboard() {
             <CardContent>
               <DataTable 
                 columns={columns} 
-                data={appointments}
-                onDelete={(id) => deleteAppointmentMutation.mutate(id)}
-                onUpdate={(id, data) => updateAppointmentMutation.mutate({ id, data })}
+                data={enhancedAppointments}
               />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="tests">
-          <Card>
-            <CardHeader>
-              <CardTitle>Lab Tests Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DataTable columns={columns} data={tests} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="doctors">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Doctors Management</CardTitle>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button>Add Doctor</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Doctor</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Doctor Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="specialty"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Specialty</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="experience"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Experience (years)</FormLabel>
-                          <FormControl>
-                            <Input type="number" {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit">Add Doctor</Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
-            </CardHeader>
-            <CardContent>
-              <DataTable columns={doctorColumns} data={doctors || []} />
             </CardContent>
           </Card>
         </TabsContent>
