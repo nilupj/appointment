@@ -416,11 +416,16 @@ class Storage {
       // Create consultation with unique room ID
       const roomId = `mc-${Math.random().toString(36).substring(2, 11)}`;
       
+      // Combine date and time slot into a proper timestamp
+      const timeSlot = data.slot;
+      const datePart = new Date(data.date).toISOString().split('T')[0];
+      const appointmentDate = new Date(`${datePart}T00:00:00.000Z`);
+
       const [appointment] = await db.insert(schema.appointments).values({
         doctorId: data.doctorId,
         userId: data.userId,
-        appointmentDate: new Date(data.date),
-        timeSlot: data.slot,
+        appointmentDate: appointmentDate,
+        timeSlot: timeSlot, // Store time slot separately
         patientNotes: data.patientNotes,
         status: data.status,
         roomId: roomId,
