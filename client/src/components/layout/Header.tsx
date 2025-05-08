@@ -311,10 +311,12 @@ const Header = () => {
                       Login / Signup
                     </Link>
                   )}
+                  </div>
                 </li>
               </ul>
             </nav>
           </div>
+        </div>
         )}
       </div>
     </header>
