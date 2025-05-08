@@ -32,6 +32,16 @@ const VideoConsult = () => {
       console.error('Error redirecting to payment:', error);
       alert('Failed to proceed to payment. Please try again.');
     }
+  };
+
+  const bookAppointment2 = async (doctorId: number, slot: string, date: string) => {
+    try {
+      const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
+
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           doctorId: doctorId,
@@ -190,7 +200,7 @@ const VideoConsult = () => {
                           {user ? (
                             <Button 
                               className="primary-button w-full"
-                              onClick={() => bookAppointment(doctor.id, doctor.availableSlots[0])}
+                              onClick={() => bookAppointment2(doctor.id, doctor.availableSlots[0], '2024-03-08')} // Added date for bookAppointment2
                             >
                               Book Consultation
                             </Button>
