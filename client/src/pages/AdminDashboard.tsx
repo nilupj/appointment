@@ -139,9 +139,9 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto py-10">
       <Tabs defaultValue="appointments">
-        <TabsList>
-          <TabsTrigger value="appointments">Appointments</TabsTrigger>
-          <TabsTrigger value="doctors">Doctors</TabsTrigger>
+        <TabsList className="w-full">
+          <TabsTrigger value="appointments" className="flex-1">Appointments</TabsTrigger>
+          <TabsTrigger value="doctors" className="flex-1">Doctors</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
           <Card>
@@ -221,6 +221,19 @@ export default function AdminDashboard() {
               <DataTable 
                 columns={columns} 
                 data={enhancedAppointments}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="doctors">
+          <Card>
+            <CardHeader>
+              <CardTitle>Doctors Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DataTable 
+                columns={doctorColumns} 
+                data={doctors}
               />
             </CardContent>
           </Card>
