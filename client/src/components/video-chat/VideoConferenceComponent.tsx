@@ -42,13 +42,20 @@ export default function VideoConferenceComponent({
         throw new Error('No appointment ID provided');
       }
 
-      // Add error handling
       if (!user) {
         throw new Error('User not authenticated');
       }
 
-      // Any authenticated user (doctor, patient, admin) can join their consultations
+      const isDoctor = user.role === 'doctor';
       console.log('User role:', user.role);
+
+      // Check if doctor has already joined for patients
+      if (!isDoctor) {
+        const checkResponse = await fetch(`/api/video-consult/check-doctor/${appointmentId}`);
+        if (!checkResponse.ok) {
+          throw new Error('Please wait for the doctor to join first');
+        }
+      }
 
       // Join the consultation
       const joinResponse = await fetch('/api/video-consult/join', {
@@ -177,6 +184,10 @@ export default function VideoConferenceComponent({
               disableDeepLinking: true,
               websocket: 'wss://meet.jit.si/xmpp-websocket',
               resolution: 720,
+              moderator: user?.role === 'doctor',
+              enableLobby: true,
+              enableClosePage: true,
+              enableModeratorIndicator: true,
               constraints: {
                 video: {
                   height: {

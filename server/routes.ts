@@ -449,6 +449,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.delete(`${apiPrefix}/admin/lab-tests/:id`, isAdmin, async (req, res) => {
+
+  // Check if doctor is present in video consultation
+  app.get(`${apiPrefix}/video-consult/check-doctor/:appointmentId`, async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const appointment = await storage.getAppointmentById(parseInt(req.params.appointmentId));
+      if (!appointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      // Check if doctor is active in the room
+      const doctorPresent = await storage.isDoctorPresentInRoom(appointment.roomId);
+      if (!doctorPresent) {
+        return res.status(403).json({ message: "Please wait for the doctor to join" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error checking doctor presence:", error);
+      res.status(500).json({ message: "Failed to check doctor presence" });
+    }
+  });
+
     try {
       await storage.deleteLabTest(parseInt(req.params.id));
       res.status(204).send();
