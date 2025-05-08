@@ -129,6 +129,24 @@ export default function UserProfile() {
         const now = new Date();
         const upcoming = data.filter(a => new Date(a.date) > now);
         const past = data.filter(a => new Date(a.date) <= now);
+        
+        // Check for live/upcoming consultations
+        const liveConsultations = upcoming.filter(apt => {
+          const aptDate = new Date(apt.date);
+          const timeDiff = Math.abs(aptDate.getTime() - now.getTime());
+          return timeDiff <= 15 * 60 * 1000;
+        });
+
+        // Show notifications for live consultations
+        liveConsultations.forEach(apt => {
+          toast({
+            title: "Your Consultation is Starting Soon",
+            description: `Video consultation with Dr. ${apt.doctorName} starts at ${new Date(apt.date).toLocaleTimeString()}`,
+            variant: "default",
+            duration: 5000
+          });
+        });
+
         setAppointments({
           upcoming: [...appointments.upcoming, ...upcoming],
           past: [...appointments.past, ...past]

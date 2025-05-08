@@ -31,9 +31,31 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const response = await fetch('/api/admin/appointments');
       if (!response.ok) throw new Error('Failed to fetch appointments');
-      return response.json();
+      const data = await response.json();
+      
+      // Check for live/upcoming consultations
+      const now = new Date();
+      const liveConsultations = data.filter(apt => {
+        const aptDate = new Date(apt.appointmentDate);
+        const timeDiff = Math.abs(aptDate.getTime() - now.getTime());
+        // Show notification for consultations within 15 minutes
+        return timeDiff <= 15 * 60 * 1000 && apt.status === "scheduled";
+      });
+
+      // Show notifications for live consultations
+      liveConsultations.forEach(apt => {
+        toast({
+          title: "Live Consultation Alert",
+          description: `Consultation with Dr. ${apt.doctor?.name} is starting soon at ${new Date(apt.appointmentDate).toLocaleTimeString()}`,
+          variant: "default",
+          duration: 5000
+        });
+      });
+
+      return data;
     },
-    enabled: user?.role === 'admin'
+    enabled: user?.role === 'admin',
+    refetchInterval: 60000 // Refresh every minute
   });
 
   const { data: doctors = [] } = useQuery({
