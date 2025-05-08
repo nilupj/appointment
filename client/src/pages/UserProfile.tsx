@@ -148,8 +148,8 @@ export default function UserProfile() {
         });
 
         setAppointments({
-          upcoming: [...appointments.upcoming, ...upcoming],
-          past: [...appointments.past, ...past]
+          upcoming: upcoming,
+          past: past
         });
       })
       .catch(console.error);
