@@ -28,6 +28,17 @@ const VideoConsult = () => {
       // Format the slot to ensure HH:MM format
       const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
       const date = new Date().toISOString().split('T')[0];
+      
+      // Check for existing appointment
+      const existingResponse = await fetch(`/api/video-consult/appointments?doctorId=${doctorId}&date=${date}&slot=${formattedSlot}`);
+      const existingData = await existingResponse.json();
+      
+      if (existingData.length > 0) {
+        const appointment = existingData[0];
+        window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctors?.find(d => d.id === doctorId)?.name || '')}&appointmentId=${appointment.id}`;
+        return;
+      }
+
       const response = await fetch('/api/video-consult/book', {
         method: 'POST',
         headers: {
