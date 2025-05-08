@@ -70,6 +70,22 @@ app.use((req, res, next) => {
       client.release();
       console.log('Database connection successful');
 
+      server.on('error', (e: any) => {
+        if (e.code === 'EADDRINUSE') {
+          console.log(`Port ${port} is busy, retrying...`);
+          setTimeout(() => {
+            server.close();
+            server.listen({
+              port,
+              host: "0.0.0.0",
+              reusePort: true,
+            }, () => {
+              log(`serving on port ${port}`);
+            });
+          }, 1000);
+        }
+      });
+
       server.listen({
         port,
         host: "0.0.0.0",

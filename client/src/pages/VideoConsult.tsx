@@ -42,8 +42,8 @@ const VideoConsult = () => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || 'Failed to book appointment');
+        const errorData = await response.json().catch(() => ({ message: 'Failed to book appointment' }));
+        throw new Error(errorData.message || 'Failed to book appointment');
       }
 
       const appointment = await response.json();
