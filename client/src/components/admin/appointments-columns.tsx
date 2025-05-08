@@ -34,9 +34,9 @@ export const columns: ColumnDef<any>[] = [
       return (
         <div className="flex items-center gap-2">
           {status === "in-progress" && isVideoConsult && (
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-              <span className="text-green-600">Live Consultation</span>
+            <div className="flex items-center bg-green-50 px-3 py-1 rounded-full">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-2 shadow-lg shadow-green-200"></div>
+              <span className="text-green-600 font-medium">Live Consultation</span>
             </div>
           )}
           {status}
