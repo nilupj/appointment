@@ -25,6 +25,8 @@ const VideoConsult = () => {
 
   const bookAppointment = async (doctorId: number, slot: string) => {
     try {
+      // Format the slot to ensure HH:MM format
+      const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
       const date = new Date().toISOString().split('T')[0];
       const response = await fetch('/api/video-consult/book', {
         method: 'POST',
@@ -33,7 +35,7 @@ const VideoConsult = () => {
         },
         body: JSON.stringify({
           doctorId: doctorId,
-          slot: slot,
+          slot: formattedSlot,
           date: date,
           patientNotes: ''
         })
