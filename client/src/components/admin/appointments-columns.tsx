@@ -35,19 +35,30 @@ export const columns: ColumnDef<any>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const appointment = row.original;
       return (
         <div className="flex gap-2">
+          {appointment.type === "Video Consultation" && appointment.status === "scheduled" && (
+            <Button
+              size="sm"
+              onClick={() => {
+                window.location.href = `/video-consult/room?doctor=${encodeURIComponent(appointment.doctor?.name || '')}&appointmentId=${appointment.id}`;
+              }}
+            >
+              Join Call
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => row.original.onEdit?.(row.original)}
+            onClick={() => appointment.onEdit?.(appointment)}
           >
             Edit
           </Button>
           <Button 
             variant="destructive" 
             size="sm" 
-            onClick={() => row.original.onDelete?.(row.original.id)}
+            onClick={() => appointment.onDelete?.(appointment.id)}
           >
             Delete
           </Button>
