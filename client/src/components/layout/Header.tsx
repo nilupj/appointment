@@ -177,13 +177,24 @@ const Header = () => {
         
         {/* Mobile Menu */}
         {isMobile && isMenuOpen && (
-          <div className="py-4 border-t border-gray-200">
-            <nav>
-              <ul className="space-y-4">
+          <div className="fixed inset-0 bg-black/50 z-40">
+            <div className="fixed inset-y-0 right-0 w-[80%] max-w-sm bg-white shadow-xl z-50 overflow-y-auto">
+              <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                <span className="font-semibold text-lg">Menu</span>
+                <button 
+                  onClick={closeMenu}
+                  className="text-gray-500 hover:text-gray-700"
+                  aria-label="Close menu"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <nav className="p-4">
+                <ul className="space-y-4">
                 <li>
                   <Link 
                     href="/find-doctors" 
-                    className={`block font-medium ${isLinkActive("/find-doctors") ? "text-primary" : "text-[#666666]"} transition`}
+                    className={`block font-medium text-lg p-2 rounded-lg ${isLinkActive("/find-doctors") ? "bg-primary/10 text-primary" : "text-[#666666] hover:bg-gray-100"} transition`}
                     onClick={closeMenu}
                   >
                     Find Doctors
@@ -252,7 +263,8 @@ const Header = () => {
                     Security & Help
                   </Link>
                 </li>
-                <li className="pt-2 mt-2 border-t border-gray-200">
+                <li className="py-4 mt-4 border-t border-gray-200">
+                  <div className="space-y-3">
                   {user ? (
                     <>
                       <Link
