@@ -257,7 +257,38 @@ export default function AdminDashboard() {
                       <DialogHeader>
                         <DialogTitle>Add Payment Method</DialogTitle>
                       </DialogHeader>
-                      <form className="space-y-4">
+                      <form onSubmit={form.handleSubmit(async (data) => {
+                        try {
+                          const response = await fetch('/api/admin/payment-methods', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data),
+                          });
+                          
+                          if (!response.ok) {
+                            throw new Error('Failed to add payment method');
+                          }
+                          
+                          toast({
+                            title: "Success",
+                            description: "Payment method added successfully",
+                          });
+                          
+                          // Close dialog and reset form
+                          const closeButton = document.querySelector('[role="dialog"] button[type="button"]');
+                          if (closeButton) closeButton.click();
+                          form.reset();
+                          
+                        } catch (error) {
+                          toast({
+                            title: "Error",
+                            description: "Failed to add payment method",
+                            variant: "destructive",
+                          });
+                        }
+                      })} className="space-y-4">
                         <FormField
                           control={form.control}
                           name="paymentType"
