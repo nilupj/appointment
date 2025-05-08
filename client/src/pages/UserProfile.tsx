@@ -119,15 +119,23 @@ export default function UserProfile() {
     return null;
   }
 
-  const upcomingAppointments = [
-    { id: 1, doctor: "Dr. John Williams", specialty: "Gynecologist", date: "May 10, 2025", time: "10:30 AM", type: "Video Consultation" },
-    { id: 2, doctor: "Dr. Sarah Johnson", specialty: "Dermatologist", date: "May 15, 2025", time: "3:00 PM", type: "In-person" },
-  ];
-
-  const pastAppointments = [
-    { id: 3, doctor: "Dr. David Smith", specialty: "General Physician", date: "April 20, 2025", time: "11:00 AM", type: "Video Consultation" },
-    { id: 4, doctor: "Dr. Michael Chen", specialty: "Sexologist", date: "April 5, 2025", time: "4:30 PM", type: "In-person" },
-  ];
+  const [appointments, setAppointments] = useState({ upcoming: [], past: [] });
+  
+  useEffect(() => {
+    // Fetch video consultations
+    fetch('/api/video-consult/appointments')
+      .then(res => res.json())
+      .then(data => {
+        const now = new Date();
+        const upcoming = data.filter(a => new Date(a.date) > now);
+        const past = data.filter(a => new Date(a.date) <= now);
+        setAppointments({
+          upcoming: [...appointments.upcoming, ...upcoming],
+          past: [...appointments.past, ...past]
+        });
+      })
+      .catch(console.error);
+  }, []);
 
   const medicalRecords = [
     { id: 1, title: "Blood Test Results", date: "April 25, 2025", type: "Laboratory" },
@@ -433,9 +441,9 @@ export default function UserProfile() {
                       </TabsList>
                       
                       <TabsContent value="upcoming">
-                        {upcomingAppointments.length > 0 ? (
+                        {appointments.upcoming.length > 0 ? (
                           <div className="space-y-4">
-                            {upcomingAppointments.map(appointment => (
+                            {appointments.upcoming.map(appointment => (
                               <Card key={appointment.id}>
                                 <CardContent className="p-6">
                                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -473,9 +481,9 @@ export default function UserProfile() {
                       </TabsContent>
                       
                       <TabsContent value="past">
-                        {pastAppointments.length > 0 ? (
+                        {appointments.past.length > 0 ? (
                           <div className="space-y-4">
-                            {pastAppointments.map(appointment => (
+                            {appointments.past.map(appointment => (
                               <Card key={appointment.id}>
                                 <CardContent className="p-6">
                                   <div className="flex flex-col md:flex-row md:items-center md:justify-between">
