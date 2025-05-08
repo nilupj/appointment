@@ -19,6 +19,7 @@ import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import AdminDashboard from './pages/AdminDashboard';
+import PaymentGateway from "@/pages/PaymentGateway"; // Added import
 
 function Router() {
   return (
@@ -36,6 +37,7 @@ function Router() {
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/profile" component={UserProfile} />
           <ProtectedRoute path="/payment" component={PaymentPage} />
+          <Route path="/payment-gateway/:doctorId/:slot" component={PaymentGateway} /> {/* Added route */}
           <Route 
             path="/admin" 
             element={

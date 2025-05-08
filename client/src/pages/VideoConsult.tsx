@@ -25,10 +25,9 @@ const VideoConsult = () => {
 
   const bookAppointment = async (doctorId: number, slot: string) => {
     try {
-      // Format the slot to ensure HH:MM format
       const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
-      const date = new Date().toISOString().split('T')[0];
-      const response = await fetch('/api/video-consult/book', {
+      // Redirect to payment gateway
+      window.location.href = `/payment-gateway/${doctorId}/${encodeURIComponent(formattedSlot)}`;
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
