@@ -113,14 +113,14 @@ type SearchSuggestion = {
 
 // Storage implementation
 class Storage {
-  
+
   // Specialists
   async getSpecialists(): Promise<Specialist[]> {
     try {
       const specialties = await db.query.specialties.findMany({
         limit: 6,
       });
-      
+
       return specialties.map(s => ({
         id: s.id,
         name: s.name,
@@ -139,7 +139,7 @@ class Storage {
       const specialties = await db.query.specialties.findMany({
         limit: 4,
       });
-      
+
       return specialties.map(s => ({
         id: s.id,
         name: s.name,
@@ -163,7 +163,7 @@ class Storage {
         orderBy: [desc(schema.articles.publishedDate)],
         limit: 10,
       });
-      
+
       return articles.map(a => ({
         id: a.id,
         title: a.title,
@@ -185,15 +185,15 @@ class Storage {
           author: true
         }
       });
-      
+
       if (!article) {
         return null;
       }
-      
+
       const authorName = article.author 
         ? `${article.author.firstName || ''} ${article.author.lastName || ''}`.trim()
         : 'MediConnect Team';
-      
+
       const publishedDate = article.publishedDate 
         ? new Date(article.publishedDate).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -201,7 +201,7 @@ class Storage {
             day: 'numeric'
           })
         : 'Unknown date';
-      
+
       return {
         id: article.id,
         title: article.title,
@@ -238,7 +238,7 @@ class Storage {
         orderBy: [desc(schema.articles.publishedDate)],
         limit: 2,
       });
-      
+
       return articles.map(a => ({
         id: a.id,
         title: a.title,
@@ -262,7 +262,7 @@ class Storage {
   async getTestimonials(): Promise<Testimonial[]> {
     try {
       const testimonials = await db.query.testimonials.findMany();
-      
+
       return testimonials.map(t => ({
         id: t.id,
         text: t.text,
@@ -281,21 +281,21 @@ class Storage {
     try {
       // Build the where clause based on filters
       const conditions = [];
-      
+
       if (filters.specialty) {
         const specialty = await db.query.specialties.findFirst({
           where: eq(schema.specialties.name, filters.specialty)
         });
-        
+
         if (specialty) {
           conditions.push(eq(schema.doctors.specialtyId, specialty.id));
         }
       }
-      
+
       if (filters.location) {
         conditions.push(eq(schema.doctors.location, filters.location));
       }
-      
+
       if (filters.experience) {
         conditions.push(between(
           schema.doctors.experience, 
@@ -303,11 +303,11 @@ class Storage {
           filters.experience.max
         ));
       }
-      
+
       if (filters.availability) {
         conditions.push(eq(schema.doctors.availability, filters.availability));
       }
-      
+
       if (filters.fee) {
         conditions.push(between(
           schema.doctors.consultationFee, 
@@ -315,7 +315,7 @@ class Storage {
           filters.fee.max
         ));
       }
-      
+
       // Execute the query
       const doctors = await db.query.doctors.findMany({
         where: conditions.length > 0 ? and(...conditions) : undefined,
@@ -324,7 +324,7 @@ class Storage {
         },
         limit: 10
       });
-      
+
       return doctors.map(d => ({
         id: d.id,
         name: d.name,
@@ -347,24 +347,24 @@ class Storage {
     try {
       // Build the where clause based on filters
       const conditions = [];
-      
+
       if (filters.specialty) {
         const specialty = await db.query.specialties.findFirst({
           where: eq(schema.specialties.name, filters.specialty)
         });
-        
+
         if (specialty) {
           conditions.push(eq(schema.doctors.specialtyId, specialty.id));
         }
       }
-      
+
       if (filters.minRating) {
         conditions.push(gte(schema.doctors.rating, filters.minRating));
       }
-      
+
       // Language filter should be implemented with array containment
       // For now, we'll handle it in memory
-      
+
       const doctors = await db.query.doctors.findMany({
         where: conditions.length > 0 ? and(...conditions) : undefined,
         with: {
@@ -373,9 +373,9 @@ class Storage {
         orderBy: [desc(schema.doctors.rating)],
         limit: 10
       });
-      
+
       let filteredDoctors = doctors;
-      
+
       // Apply language filter in memory
       if (filters.language) {
         filteredDoctors = doctors.filter(d => {
@@ -383,7 +383,7 @@ class Storage {
           return languages.includes(filters.language);
         });
       }
-      
+
       return filteredDoctors.map(d => ({
         id: d.id,
         name: d.name,
@@ -400,7 +400,7 @@ class Storage {
       throw error;
     }
   }
-  
+
   // Create a video consultation appointment
   async createVideoConsultation(data: any): Promise<any> {
     try {
@@ -408,24 +408,21 @@ class Storage {
       const doctor = await db.query.doctors.findFirst({
         where: eq(schema.doctors.id, data.doctorId)
       });
-      
+
       if (!doctor) {
         throw new Error("Doctor not found");
       }
-      
+
       // Create consultation with unique room ID
       const roomId = `mc-${Math.random().toString(36).substring(2, 11)}`;
-      
+
       // Combine date and time slot into a proper timestamp
       const timeSlot = data.slot;
-      // Set appointment time to start of day since time is handled separately
-      const appointmentDate = new Date(data.date);
-      appointmentDate.setHours(0, 0, 0, 0);
-
-      const [appointment] = await db.insert(schema.appointments).values({
+      // Store time slot separately and use full date for appointment
+      const appointment = await db.insert(schema.appointments).values({
         doctorId: data.doctorId,
         userId: data.userId,
-        appointmentDate: appointmentDate,
+        appointmentDate: new Date(data.date),
         timeSlot: data.slot,
         patientNotes: data.patientNotes || '',
         status: data.status || 'scheduled',
@@ -433,7 +430,7 @@ class Storage {
         createdAt: new Date(),
         updatedAt: new Date()
       }).returning();
-      
+
       return {
         ...appointment,
         roomId
@@ -443,7 +440,7 @@ class Storage {
       throw error;
     }
   }
-  
+
   // Get user's video consultation appointments
   async getUserVideoConsultations(userId: number): Promise<any[]> {
     try {
@@ -458,7 +455,7 @@ class Storage {
         },
         orderBy: [desc(schema.appointments.appointmentDate)]
       });
-      
+
       return appointments.map(a => ({
         id: a.id,
         doctorId: a.doctorId,
@@ -475,14 +472,14 @@ class Storage {
       throw error;
     }
   }
-  
+
   // Get doctor's available slots
   async getDoctorAvailableSlots(doctorId: number, date: string): Promise<string[]> {
     try {
       // Fixed slots based on doctor's schedule
       const allSlots = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
                          '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
-      
+
       // Find booked slots for the given date and doctor
       const bookedAppointments = await db.query.appointments.findMany({
         where: and(
@@ -491,9 +488,9 @@ class Storage {
           eq(sql`DATE(${schema.appointments.appointmentDate})`, date)
         )
       });
-      
+
       const bookedSlots = bookedAppointments.map(a => a.timeSlot);
-      
+
       // Return available slots (exclude booked ones)
       return allSlots.filter(slot => !bookedSlots.includes(slot));
     } catch (error) {
@@ -501,7 +498,7 @@ class Storage {
       throw error;
     }
   }
-  
+
   // Get user appointments
   async getUserAppointments(userId: number): Promise<any> {
     try {
@@ -611,16 +608,16 @@ class Storage {
           user: true
         }
       });
-      
+
       if (!appointment) {
         throw new Error("Appointment not found");
       }
-      
+
       // Verify the user is either the doctor or the patient
       if (appointment.userId !== userId && appointment.doctor.id !== userId) {
         throw new Error("Unauthorized to join this consultation");
       }
-      
+
       // Update appointment status to "in-progress" if it was "scheduled"
       if (appointment.status === "scheduled") {
         await db.update(schema.appointments)
@@ -630,7 +627,7 @@ class Storage {
           })
           .where(eq(schema.appointments.id, appointmentId));
       }
-      
+
       return {
         roomId: appointment.roomId || `mc-${Math.random().toString(36).substring(2, 11)}`,
         doctorName: appointment.doctor?.name || 'Doctor',
@@ -653,7 +650,7 @@ class Storage {
         },
         limit: 6
       });
-      
+
       return surgeries.map(s => ({
         id: s.id,
         name: s.name,
@@ -751,26 +748,26 @@ async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
         where: like(schema.doctors.name, `%${query}%`),
         limit: 3
       });
-      
+
       // Search for specialties
       const specialties = await db.query.specialties.findMany({
         where: like(schema.specialties.name, `%${query}%`),
         limit: 3
       });
-      
+
       // Combine results
       const doctorSuggestions: SearchSuggestion[] = doctors.map(d => ({
         id: d.id,
         name: `Dr. ${d.name}`,
         type: 'doctor'
       }));
-      
+
       const specialtySuggestions: SearchSuggestion[] = specialties.map(s => ({
         id: s.id,
         name: s.name,
         type: 'specialty'
       }));
-      
+
       return [...doctorSuggestions, ...specialtySuggestions];
     } catch (error) {
       console.error(`Error in getSearchSuggestions for query ${query}:`, error);
