@@ -190,47 +190,28 @@ export default function VideoConferenceComponent({
             roomName={roomName}
             configOverwrite={{
               startWithAudioMuted: false,
-              startWithVideoMuted: false,
               prejoinPageEnabled: false,
               hideConferenceSubject: false,
-              disableDeepLinking: true, 
+              disableDeepLinking: true,
               resolution: 720,
               lobby: {
                 autoKnock: true,
                 enableChat: true
               },
               moderator: isDoctor,
-              membersOnly: false,
-              enableLobby: false,
+              membersOnly: true,
+              enableLobby: true,
               enableClosePage: true,
               enableModeratorIndicator: true,
               disablePolls: true,
               disableReactions: true,
-              toolbarButtons: [
-                'camera',
-                'chat',
-                'closedcaptions',
-                'desktop',
-                'fullscreen',
-                'hangup',
-                'microphone',
-                'raisehand',
-                'settings',
-              ],
-              constraints: {
-                video: {
-                  height: {
-                    ideal: 720,
-                    max: 720,
-                    min: 180
-                  }
-                }
-              },
-              p2p: {
-                enabled: true
-              },
+              disableInviteFunctions: true,
+              requireDisplayName: true,
               enableLipSync: true,
-              enableAutomaticUrlCopy: false
+              notifications: {
+                enableNotifications: true,
+                enableKnockingParticipants: true
+              },
             }}
             interfaceConfigOverwrite={{
               TOOLBAR_BUTTONS: [
