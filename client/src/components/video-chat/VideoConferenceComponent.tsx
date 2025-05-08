@@ -193,18 +193,30 @@ export default function VideoConferenceComponent({
               startWithVideoMuted: false,
               prejoinPageEnabled: false,
               hideConferenceSubject: false,
-              disableDeepLinking: true,
-              websocket: 'wss://meet.jit.si/xmpp-websocket',
+              disableDeepLinking: true, 
               resolution: 720,
               lobby: {
-                autoKnock: false,
-                enableChat: false
+                autoKnock: true,
+                enableChat: true
               },
               moderator: isDoctor,
               membersOnly: false,
               enableLobby: false,
               enableClosePage: true,
               enableModeratorIndicator: true,
+              disablePolls: true,
+              disableReactions: true,
+              toolbarButtons: [
+                'camera',
+                'chat',
+                'closedcaptions',
+                'desktop',
+                'fullscreen',
+                'hangup',
+                'microphone',
+                'raisehand',
+                'settings',
+              ],
               constraints: {
                 video: {
                   height: {
