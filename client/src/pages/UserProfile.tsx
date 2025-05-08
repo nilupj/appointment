@@ -480,7 +480,39 @@ export default function UserProfile() {
                                       {appointment.type === "Video Consultation" && (
                                         <Button>Join Consultation</Button>
                                       )}
-                                      <Button variant="outline">Reschedule</Button>
+                                      <Button 
+                                        variant="outline"
+                                        onClick={() => {
+                                          const newDate = window.prompt('Enter new date (YYYY-MM-DD)');
+                                          const newTime = window.prompt('Enter new time (HH:MM)');
+                                          
+                                          if (newDate && newTime) {
+                                            fetch(`/api/appointments/${appointment.id}`, {
+                                              method: 'PUT',
+                                              headers: {
+                                                'Content-Type': 'application/json'
+                                              },
+                                              body: JSON.stringify({
+                                                date: `${newDate}T${newTime}`,
+                                                status: 'rescheduled'
+                                              })
+                                            })
+                                            .then(response => {
+                                              if (response.ok) {
+                                                window.location.reload();
+                                              } else {
+                                                alert('Failed to reschedule appointment');
+                                              }
+                                            })
+                                            .catch(error => {
+                                              console.error('Error:', error);
+                                              alert('Failed to reschedule appointment');
+                                            });
+                                          }
+                                        }}
+                                      >
+                                        Reschedule
+                                      </Button>
                                       <Button variant="destructive" size="sm">Cancel</Button>
                                     </div>
                                   </div>
