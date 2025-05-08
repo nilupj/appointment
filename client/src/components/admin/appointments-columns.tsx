@@ -6,15 +6,27 @@ import { format } from "date-fns";
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
-    header: "ID"
+    header: "Booking ID"
   },
   {
     accessorKey: "user.username",
-    header: "Patient"
+    header: "Patient Name"
   },
   {
     accessorKey: "doctor.name",
-    header: "Doctor"
+    header: "Doctor Name"
+  },
+  {
+    accessorKey: "doctor.specialty",
+    header: "Specialty"
+  },
+  {
+    accessorKey: "consultationFee",
+    header: "Fee",
+    cell: ({ row }) => {
+      const fee = row.getValue("consultationFee");
+      return `₹${fee || 500}`;
+    }
   },
   {
     accessorKey: "appointmentDate",

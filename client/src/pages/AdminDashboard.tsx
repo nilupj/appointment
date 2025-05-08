@@ -55,7 +55,12 @@ export default function AdminDashboard() {
       return data;
     },
     enabled: user?.role === 'admin',
-    refetchInterval: 10000 // Refresh every 10 seconds to see live consultation updates
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    select: (data) => data.map(apt => ({
+      ...apt,
+      consultationFee: apt.doctor?.consultationFee || 500,
+      specialty: apt.doctor?.specialty || 'General Medicine'
+    }))
   });
 
   const { data: doctors = [] } = useQuery({
