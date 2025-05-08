@@ -142,6 +142,7 @@ export default function AdminDashboard() {
         <TabsList className="w-full">
           <TabsTrigger value="appointments" className="flex-1">Appointments</TabsTrigger>
           <TabsTrigger value="doctors" className="flex-1">Doctors</TabsTrigger>
+          <TabsTrigger value="payments" className="flex-1">Payments</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
           <Card>
@@ -235,6 +236,94 @@ export default function AdminDashboard() {
                 columns={doctorColumns} 
                 data={doctors}
               />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment Methods Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Available Payment Methods</h3>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Add Payment Method</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add Payment Method</DialogTitle>
+                      </DialogHeader>
+                      <form className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="paymentType"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Payment Type</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select payment type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="card">Credit/Debit Card</SelectItem>
+                                  <SelectItem value="upi">UPI</SelectItem>
+                                  <SelectItem value="netbanking">Net Banking</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="provider"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Provider</FormLabel>
+                              <Input {...field} placeholder="e.g. PayPal, Stripe" />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit">Add Method</Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <DataTable 
+                  columns={[
+                    {
+                      accessorKey: "type",
+                      header: "Payment Type"
+                    },
+                    {
+                      accessorKey: "provider",
+                      header: "Provider"
+                    },
+                    {
+                      accessorKey: "status",
+                      header: "Status"
+                    },
+                    {
+                      id: "actions",
+                      cell: ({ row }) => (
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">Edit</Button>
+                          <Button variant="destructive" size="sm">Delete</Button>
+                        </div>
+                      )
+                    }
+                  ]} 
+                  data={[
+                    { type: "Credit/Debit Card", provider: "Stripe", status: "Active" },
+                    { type: "UPI", provider: "PhonePe", status: "Active" },
+                    { type: "PayPal", provider: "PayPal", status: "Active" }
+                  ]}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
