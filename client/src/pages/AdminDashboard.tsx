@@ -28,6 +28,11 @@ export default function AdminDashboard() {
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['/api/admin/appointments'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/appointments');
+      if (!response.ok) throw new Error('Failed to fetch appointments');
+      return response.json();
+    },
     enabled: user?.role === 'admin'
   });
 
