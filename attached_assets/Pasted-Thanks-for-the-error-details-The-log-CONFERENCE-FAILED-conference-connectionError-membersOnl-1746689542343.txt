@@ -1,0 +1,76 @@
+Thanks for the error details. The log:
+
+```
+CONFERENCE FAILED: conference.connectionError.membersOnly mc-23yp0jerm@lobby.meet.jit.si
+```
+
+confirms that your **Jitsi room is locked with "membersOnly" mode**, meaning:
+
+> 🔒 Only **authenticated or moderator-approved users** can join — others are stuck in the lobby.
+
+---
+
+## ✅ How to Fix This (Based on Your Use Case)
+
+### 🔹 **Option 1: Let the Doctor Admit the Patient (Recommended for Real Use)**
+
+1. **Doctor opens the meeting link first**.
+2. Doctor gets **moderator rights** (automatically if using JWT or authenticated session).
+3. When the patient joins, the doctor sees a **prompt to admit them from the lobby**.
+4. Doctor clicks **"Admit"**, and the patient joins.
+
+> 🧑‍⚕️ Make sure the doctor joins first or no one can admit the patient.
+
+---
+
+### 🔹 **Option 2: Disable `membersOnly` for Testing (Not Secure)**
+
+If you're just testing and want anyone to join directly:
+
+1. On your **Jitsi server config**, open:
+
+   ```bash
+   /etc/prosody/conf.d/yourdomain.cfg.lua
+   ```
+2. Find and set this:
+
+   ```lua
+   lobby_muc = "lobby.yourdomain.com"
+   main_muc = "conference.yourdomain.com"
+
+   -- Comment out or set:
+   -- "members_only = true" -> remove or set false
+   ```
+3. Restart Prosody:
+
+   ```bash
+   sudo systemctl restart prosody
+   ```
+
+> ⚠️ This change disables the lobby for all rooms.
+
+---
+
+### 🔹 **Option 3: Use JaaS (Jitsi as a Service) for Easier Auth**
+
+* Jitsi’s hosted solution lets you easily manage:
+
+  * Lobby
+  * User roles (moderator, guest)
+  * Tokens for room control
+
+[More on JaaS setup](https://jaas.8x8.vc/)
+
+---
+
+### Summary
+
+| Goal                  | Solution                                   |
+| --------------------- | ------------------------------------------ |
+| Doctor admits patient | Doctor joins first, patient waits in lobby |
+| No lobby/testing      | Disable `membersOnly` in Jitsi config      |
+| Better auth/control   | Use JWT or JaaS for role-based join        |
+
+---
+
+Do you want help modifying your Jitsi embed code to control who becomes moderator and when the patient joins?
