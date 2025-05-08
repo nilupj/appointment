@@ -416,23 +416,31 @@ class Storage {
       // Create consultation with unique room ID
       const roomId = `mc-${Math.random().toString(36).substring(2, 11)}`;
 
-      // Combine date and time slot into a proper timestamp
-      const timeSlot = data.slot;
-      // Store time slot separately and use full date for appointment
+      // Convert date and time slot to appointment time
+      const appointmentDate = new Date(data.date);
+      const [hours, minutes] = data.slot.split(':');
+      appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      // Store consultation details
       const appointment = await db.insert(schema.appointments).values({
         doctorId: data.doctorId,
         userId: data.userId,
-        appointmentDate: new Date(data.date),
+        appointmentDate: appointmentDate,
         timeSlot: data.slot,
         patientNotes: data.patientNotes || '',
         status: data.status || 'scheduled',
         roomId: roomId,
+        prescriptionNotes: '',
+        followUpRecommended: false,
         createdAt: new Date(),
         updatedAt: new Date()
       }).returning();
 
+      // Send notification/email here if needed
+
       return {
         ...appointment,
+        doctorName: doctor.name,
         roomId
       };
     } catch (error) {

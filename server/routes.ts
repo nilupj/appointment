@@ -142,10 +142,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
-      const { doctorId, slot, date, patientNotes } = req.body;
+      const { doctorId, slot, date, patientNotes, symptoms } = req.body;
 
       if (!doctorId || !slot || !date) {
         return res.status(400).json({ message: "Doctor ID, slot time, and date are required" });
+      }
+
+      // Validate time slot format (HH:MM)
+      if (!/^\d{1,2}:\d{2}$/.test(slot)) {
+        return res.status(400).json({ message: "Invalid time slot format" });
       }
 
       // Create new appointment
@@ -155,10 +160,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         slot,
         date,
         patientNotes: patientNotes || "",
+        symptoms: symptoms || [],
         status: "scheduled"
       });
 
-      res.status(201).json(appointment);
+      res.status(201).json({
+        ...appointment,
+        message: "Appointment booked successfully. You'll receive a confirmation email shortly."
+      });
     } catch (error) {
       console.error("Error booking video consultation:", error);
       res.status(500).json({ message: "Failed to book consultation" });
