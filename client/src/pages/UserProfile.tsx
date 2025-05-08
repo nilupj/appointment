@@ -549,8 +549,42 @@ export default function UserProfile() {
                                       </div>
                                     </div>
                                     <div className="mt-4 md:mt-0 space-x-2">
-                                      <Button variant="outline">View Details</Button>
-                                      <Button variant="outline">Book Again</Button>
+                                      <Dialog>
+                                        <DialogTrigger asChild>
+                                          <Button variant="outline">View Details</Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                          <DialogHeader>
+                                            <DialogTitle>Appointment Details</DialogTitle>
+                                          </DialogHeader>
+                                          <div className="space-y-4">
+                                            <div>
+                                              <h4 className="font-semibold">Doctor</h4>
+                                              <p>{appointment.doctor}</p>
+                                            </div>
+                                            <div>
+                                              <h4 className="font-semibold">Date & Time</h4>
+                                              <p>{appointment.date} at {appointment.time}</p>
+                                            </div>
+                                            <div>
+                                              <h4 className="font-semibold">Type</h4>
+                                              <p>{appointment.type}</p>
+                                            </div>
+                                            <div>
+                                              <h4 className="font-semibold">Status</h4>
+                                              <p>{appointment.status}</p>
+                                            </div>
+                                          </div>
+                                        </DialogContent>
+                                      </Dialog>
+                                      <Button 
+                                        variant="outline"
+                                        onClick={() => {
+                                          window.location.href = `/video-consult?doctor=${encodeURIComponent(appointment.doctor)}`;
+                                        }}
+                                      >
+                                        Book Again
+                                      </Button>
                                     </div>
                                   </div>
                                 </CardContent>
