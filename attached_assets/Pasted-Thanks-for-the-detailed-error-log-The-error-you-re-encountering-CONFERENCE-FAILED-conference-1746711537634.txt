@@ -1,0 +1,64 @@
+Thanks for the detailed error log. The error you're encountering:
+
+```
+CONFERENCE FAILED: conference.connectionError.membersOnly
+```
+
+means that **the patient is trying to join a Jitsi room that is set to "members only"**, and they are **not authorized** or **not yet accepted** from the lobby.
+
+---
+
+## ✅ What This Means
+
+Your Jitsi room has the **lobby feature enabled**, which requires:
+
+* A moderator (like the doctor) to be **present and admit** the patient manually.
+* OR, the joining user must be a **member (authenticated)** and not just a guest.
+
+---
+
+## 🛠️ How to Fix It
+
+### Option 1: Let the Doctor Admit the Patient (Quick Fix)
+
+* Ask the doctor to **join the meeting first**.
+* The patient will show up in the **lobby** (a popup will prompt the doctor).
+* The doctor **clicks "Admit"** to let the patient in.
+
+This is default behavior when using Jitsi’s lobby feature.
+
+---
+
+### Option 2: Disable the Lobby Feature (if not needed)
+
+If you're embedding or self-hosting Jitsi, you can disable the lobby using the **Jitsi config.js** file:
+
+```js
+// In your Jitsi Meet config (config.js):
+enableLobby: false,
+```
+
+If you're using a public server like `meet.jit.si`, you **can’t disable this**—you must follow Option 1.
+
+---
+
+### Option 3: Automatically Join with Moderator Role (Advanced)
+
+To bypass the lobby entirely:
+
+* Use **JWT tokens** to join as a moderator (requires a self-hosted Jitsi setup with JWT auth).
+* That way, the patient can also be a moderator and skip the lobby.
+
+---
+
+### Summary
+
+| Solution                   | Works On                   | Requires            |
+| -------------------------- | -------------------------- | ------------------- |
+| Doctor admits patient      | Public Jitsi / meet.jit.si | Doctor online first |
+| Disable lobby              | Self-hosted Jitsi only     | Config change       |
+| Join with JWT as moderator | Self-hosted Jitsi only     | Auth setup          |
+
+---
+
+Do you want help setting up auto-admit behavior or customizing the lobby logic in your app?
