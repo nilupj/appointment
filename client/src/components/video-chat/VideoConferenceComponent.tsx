@@ -145,7 +145,7 @@ export default function VideoConferenceComponent({
               <div className="flex justify-center">
                 <Button 
                   onClick={handleJoinMeeting} 
-                  disabled={isJoining}
+                  disabled={isJoining || (!isDoctor && !roomName)}
                   size="lg"
                   className="w-full sm:w-auto"
                 >
@@ -184,7 +184,12 @@ export default function VideoConferenceComponent({
               disableDeepLinking: true,
               websocket: 'wss://meet.jit.si/xmpp-websocket',
               resolution: 720,
-              moderator: user?.role === 'doctor',
+              lobby: {
+                autoKnock: true,
+                enableChat: false
+              },
+              moderator: isDoctor,
+              membersOnly: true,
               enableLobby: true,
               enableClosePage: true,
               enableModeratorIndicator: true,
