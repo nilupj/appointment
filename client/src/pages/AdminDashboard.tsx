@@ -55,7 +55,7 @@ export default function AdminDashboard() {
       return data;
     },
     enabled: user?.role === 'admin',
-    refetchInterval: 60000 // Refresh every minute
+    refetchInterval: 10000 // Refresh every 10 seconds to see live consultation updates
   });
 
   const { data: doctors = [] } = useQuery({

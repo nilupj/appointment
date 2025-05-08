@@ -25,7 +25,24 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status"
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+      const type = row.getValue("type");
+      const isVideoConsult = type?.toLowerCase().includes("video");
+      
+      return (
+        <div className="flex items-center gap-2">
+          {status === "in-progress" && isVideoConsult && (
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+              <span className="text-green-600">Live Consultation</span>
+            </div>
+          )}
+          {status}
+        </div>
+      );
+    }
   },
   {
     accessorKey: "type",
