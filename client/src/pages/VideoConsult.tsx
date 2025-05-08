@@ -46,7 +46,8 @@ const VideoConsult = () => {
         throw new Error(errorData.message || 'Failed to book appointment');
       }
 
-      const appointment = await response.json();
+      const data = await response.json();
+      const appointment = data[0] || data; // Handle both array and direct object response
       if (appointment?.id) {
         const doctorName = doctors?.find(d => d.id === doctorId)?.name || '';
         window.location.href = `/video-consult/room?doctor=${encodeURIComponent(doctorName)}&appointmentId=${appointment.id}`;
