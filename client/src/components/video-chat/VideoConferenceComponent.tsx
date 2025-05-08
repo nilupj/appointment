@@ -191,18 +191,18 @@ export default function VideoConferenceComponent({
             configOverwrite={{
               startWithAudioMuted: false,
               startWithVideoMuted: false,
-              prejoinPageEnabled: false, // Disable prejoin page
+              prejoinPageEnabled: false,
               hideConferenceSubject: false,
               disableDeepLinking: true,
               websocket: 'wss://meet.jit.si/xmpp-websocket',
               resolution: 720,
               lobby: {
-                autoKnock: true, // Enable auto-knock for lobby
+                autoKnock: false,
                 enableChat: false
               },
-              moderator: isDoctor, // Set moderator based on doctor status
-              membersOnly: true,
-              enableLobby: isDoctor, // Enable lobby only for the doctor
+              moderator: isDoctor,
+              membersOnly: false,
+              enableLobby: false,
               enableClosePage: true,
               enableModeratorIndicator: true,
               constraints: {
