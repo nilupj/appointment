@@ -25,20 +25,10 @@ const VideoConsult = () => {
 
   const bookAppointment = async (doctorId: number, slot: string) => {
     try {
+      // Format the slot to ensure HH:MM format
       const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
-      // Redirect to payment gateway
-      window.location.href = `/payment-gateway/${doctorId}/${encodeURIComponent(formattedSlot)}`;
-    } catch (error) {
-      console.error('Error redirecting to payment:', error);
-      alert('Failed to proceed to payment. Please try again.');
-    }
-  };
-
-  const bookAppointment2 = async (doctorId: number, slot: string, date: string) => {
-    try {
-      const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
-
-      const response = await fetch('/api/appointments', {
+      const date = new Date().toISOString().split('T')[0];
+      const response = await fetch('/api/video-consult/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -200,7 +190,7 @@ const VideoConsult = () => {
                           {user ? (
                             <Button 
                               className="primary-button w-full"
-                              onClick={() => bookAppointment2(doctor.id, doctor.availableSlots[0], '2024-03-08')} // Added date for bookAppointment2
+                              onClick={() => bookAppointment(doctor.id, doctor.availableSlots[0])}
                             >
                               Book Consultation
                             </Button>
