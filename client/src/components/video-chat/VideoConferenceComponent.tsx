@@ -140,6 +140,9 @@ export default function VideoConferenceComponent({
                   <li>Have your medical records ready if needed</li>
                   <li>Prepare any questions you want to ask</li>
                 </ul>
+                <p className="mt-3 text-sm text-primary">
+                  {isDoctor ? "As a doctor, you will be the moderator of this call." : "Please wait for the doctor to join the consultation."}
+                </p>
               </div>
 
               <div className="flex justify-center">
