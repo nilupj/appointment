@@ -1,0 +1,117 @@
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Database connection successful
+4:31:14 AM [express] serving on port 5000
+4:31:30 AM [express] GET /api/user 401 in 218ms :: {"message":"Not authenticated"}
+4:31:30 AM [express] GET /api/specialists 304 in 447ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:31:30 AM [express] GET /api/clinic-specialties 304 in 440ms :: [{"id":1,"name":"Period doubts or P…
+4:31:30 AM [express] GET /api/articles 304 in 454ms :: [{"id":3,"title":"The Importance of Regular E…
+4:31:30 AM [express] GET /api/testimonials 304 in 437ms :: [{"id":1,"text":"Very helpful! For more t…
+4:31:31 AM [express] GET /api/specialists 200 in 435ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:31:31 AM [express] GET /api/user 401 in 226ms :: {"message":"Not authenticated"}
+4:31:31 AM [express] GET /api/user 401 in 217ms :: {"message":"Not authenticated"}
+4:31:31 AM [express] GET /api/clinic-specialties 200 in 442ms :: [{"id":1,"name":"Period doubts or P…
+4:31:31 AM [express] GET /api/articles 200 in 445ms :: [{"id":3,"title":"The Importance of Regular E…
+4:31:31 AM [express] GET /api/testimonials 200 in 437ms :: [{"id":1,"text":"Very helpful! For more t…
+4:31:31 AM [express] GET /api/specialists 200 in 440ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:31:31 AM [express] GET /api/clinic-specialties 200 in 449ms :: [{"id":1,"name":"Period doubts or P…
+4:31:31 AM [express] GET /api/articles 200 in 438ms :: [{"id":3,"title":"The Importance of Regular E…
+4:31:31 AM [express] GET /api/testimonials 200 in 436ms :: [{"id":1,"text":"Very helpful! For more t…
+4:31:56 AM [express] GET /api/video-consult-doctors 200 in 1112ms :: [{"id":3,"name":"Michael Chen",…
+4:32:01 AM [express] GET /api/user 401 in 220ms :: {"message":"Not authenticated"}
+4:32:07 AM [express] POST /api/login 200 in 1156ms :: {"id":1,"username":"admin","password":"e5ccd10…
+4:32:08 AM [express] GET /api/testimonials 304 in 869ms :: [{"id":1,"text":"Very helpful! For more t…
+4:32:08 AM [express] GET /api/specialists 304 in 875ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:32:08 AM [express] GET /api/clinic-specialties 304 in 883ms :: [{"id":1,"name":"Period doubts or P…
+4:32:08 AM [express] GET /api/articles 304 in 903ms :: [{"id":3,"title":"The Importance of Regular E…
+4:32:10 AM [express] GET /api/video-consult-doctors 304 in 910ms :: [{"id":3,"name":"Michael Chen","…
+Error in createVideoConsultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+Error booking video consultation: error: invalid input syntax for type timestamp: "9:00 AM"
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:29)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:152:27) {
+  length: 153,
+  severity: 'ERROR',
+  code: '22007',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: "unnamed portal parameter $6 = '...'",
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'datetime.c',
+  line: '4140',
+  routine: 'DateTimeParseError'
+}
+4:32:13 AM [express] POST /api/video-consult/book 500 in 1141ms :: {"message":"Failed to book consul…
+4:33:17 AM [express] POST /api/video-consult/book 500 in 892ms :: {"message":"relation \"user_sessio…
+error: relation "user_sessions" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+error: relation "user_sessions" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+error: relation "user_sessions" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+error: The requested endpoint could not be found, or you don't have access to it. Please check the provided ID and try again.
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+Failed to prune sessions: error: The requested endpoint could not be found, or you don't have access to it. Please check the provided ID and try again.
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21) {
+  length: 139,
+  severity: 'ERROR',
+  code: 'XX000',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined
+}
