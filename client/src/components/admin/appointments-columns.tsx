@@ -38,7 +38,7 @@ export const columns: ColumnDef<any>[] = [
       const appointment = row.original;
       return (
         <div className="flex gap-2">
-          {appointment.type === "Video Consultation" && appointment.status === "scheduled" && (
+          {appointment.type === "Video Consultation" && (appointment.status === "scheduled" || appointment.status === "in-progress") && (
             <Button
               size="sm"
               onClick={() => {
