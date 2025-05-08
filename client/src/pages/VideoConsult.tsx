@@ -28,9 +28,10 @@ const VideoConsult = () => {
       const formattedSlot = slot.replace(/[APM]/g, '').trim().padStart(5, '0');
       // Redirect to payment gateway
       window.location.href = `/payment-gateway/${doctorId}/${encodeURIComponent(formattedSlot)}`;
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+    } catch (error) {
+      console.error('Error redirecting to payment:', error);
+      alert('Failed to proceed to payment. Please try again.');
+    }
         },
         body: JSON.stringify({
           doctorId: doctorId,
