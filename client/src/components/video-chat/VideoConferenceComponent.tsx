@@ -22,7 +22,7 @@ export default function VideoConferenceComponent({
   const { user, isLoading } = useAuth();
   const [isJoining, setIsJoining] = useState(false);
   const [isInCall, setIsInCall] = useState(false);
-  const isDoctor = user?.role === 'doctor';
+  const [isDoctor, setIsDoctor] = useState(false); // Added state to track doctor status
   const [roomName, setRoomName] = useState(initialRoomName || '');
 
   // Generate a random room name if not provided
@@ -35,6 +35,25 @@ export default function VideoConferenceComponent({
     }
   }, [initialRoomName, appointmentId]);
 
+  useEffect(() => {
+    const checkDoctorStatus = async () => {
+      if (appointmentId && user) {
+        try {
+          const response = await fetch(`/api/video-consult/check-doctor/${appointmentId}`);
+          if (!response.ok) {
+            throw new Error('Error checking doctor status');
+          }
+          const data = await response.json();
+          setIsDoctor(data.isDoctor);
+        } catch (error) {
+          console.error('Error checking doctor status:', error);
+        }
+      }
+    };
+    checkDoctorStatus();
+  }, [appointmentId, user]);
+
+
   const handleJoinMeeting = async () => {
     setIsJoining(true);
     try {
@@ -46,24 +65,14 @@ export default function VideoConferenceComponent({
         throw new Error('User not authenticated');
       }
 
-      const isDoctor = user.role === 'doctor';
-      console.log('User role:', user.role);
 
-      // Check if doctor has already joined for patients
-      if (!isDoctor) {
-        const checkResponse = await fetch(`/api/video-consult/check-doctor/${appointmentId}`);
-        if (!checkResponse.ok) {
-          throw new Error('Please wait for the doctor to join first');
-        }
-      }
-
-      // Join the consultation
+      // Join the consultation.  The server-side should handle room creation and access control.
       const joinResponse = await fetch('/api/video-consult/join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ appointmentId })
+        body: JSON.stringify({ appointmentId, isDoctor }) // Include doctor status
       });
 
       if (!joinResponse.ok) {
@@ -182,18 +191,18 @@ export default function VideoConferenceComponent({
             configOverwrite={{
               startWithAudioMuted: false,
               startWithVideoMuted: false,
-              prejoinPageEnabled: true,
+              prejoinPageEnabled: false, // Disable prejoin page
               hideConferenceSubject: false,
               disableDeepLinking: true,
               websocket: 'wss://meet.jit.si/xmpp-websocket',
               resolution: 720,
               lobby: {
-                autoKnock: true,
+                autoKnock: true, // Enable auto-knock for lobby
                 enableChat: false
               },
-              moderator: isDoctor,
+              moderator: isDoctor, // Set moderator based on doctor status
               membersOnly: true,
-              enableLobby: true,
+              enableLobby: isDoctor, // Enable lobby only for the doctor
               enableClosePage: true,
               enableModeratorIndicator: true,
               constraints: {
@@ -231,7 +240,6 @@ export default function VideoConferenceComponent({
               iframeRef.style.width = '100%';
             }}
             onApiReady={(externalApi) => {
-              // You can use the API here
               externalApi.on('videoConferenceLeft', () => {
                 handleLeaveMeeting();
               });
