@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -17,29 +18,21 @@ export default function WhatsAppFloat() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const whatsappNumber = '919876543210'; // Your business WhatsApp number with country code
+  const whatsappNumber = '7994556262'; // Updated number
   
   const handleWhatsAppRedirect = () => {
-    // Default message if user didn't provide one
-    const defaultMessage = 'Hello! I have a question about MediConnect services.';
-    // Use the phone number entered by the user, or default to the business number
-    const targetNumber = phoneNumber.replace(/[^0-9]/g, '') || whatsappNumber;
-    
-    // Ensure number starts with country code
-    const formattedNumber = targetNumber.startsWith('91') ? targetNumber : `91${targetNumber}`;
-    
-    // Create WhatsApp URL with properly encoded message
-    const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(message || defaultMessage)}`;
-    
-    // Open WhatsApp in a new tab
-    window.open(url, '_blank');
-    
-    // Close the dialog
-    setIsDialogOpen(false);
-    
-    // Reset the form
-    setMessage('');
-    setPhoneNumber('');
+    try {
+      const defaultMessage = 'Hello! I have a question about MediConnect services.';
+      const targetNumber = phoneNumber.replace(/[^0-9]/g, '') || whatsappNumber;
+      const formattedNumber = targetNumber.startsWith('91') ? targetNumber : `91${targetNumber}`;
+      const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(message || defaultMessage)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setIsDialogOpen(false);
+      setMessage('');
+      setPhoneNumber('');
+    } catch (error) {
+      console.error('WhatsApp redirect error:', error);
+    }
   };
   
   return (
@@ -67,13 +60,13 @@ export default function WhatsAppFloat() {
               <Label htmlFor="phoneNumber">WhatsApp Number (optional)</Label>
               <Input
                 id="phoneNumber"
-                placeholder="Enter doctor's WhatsApp number if you have it"
+                placeholder="Enter doctor's WhatsApp number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="col-span-3"
               />
               <p className="text-xs text-muted-foreground">
-                Leave blank to use our customer support number
+                Leave blank to use our support number: {whatsappNumber}
               </p>
             </div>
             
