@@ -662,6 +662,7 @@ const LabTests = () => {
                               </DialogContent>
                             </Dialog>
                           </div>
+                        </div>
                       </CardContent>
                     </Card>
                 ))}
