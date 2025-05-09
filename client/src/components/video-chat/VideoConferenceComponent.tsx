@@ -194,24 +194,22 @@ export default function VideoConferenceComponent({
               hideConferenceSubject: false,
               disableDeepLinking: true,
               resolution: 720,
-              lobby: {
-                autoKnock: true,
-                enableChat: true
-              },
-              moderator: isDoctor,
-              membersOnly: false,
-              enableLobby: false,
-              enableClosePage: true,
+              enableLobby: !isDoctor,
               enableModeratorIndicator: true,
-              disablePolls: true,
-              disableReactions: true,
-              disableInviteFunctions: true,
-              requireDisplayName: true,
-              enableLipSync: true,
+              moderatorRoles: ['doctor'],
+              testing: {
+                enableFirefoxSimulcast: false
+              },
+              p2p: {
+                enabled: false
+              },
               notifications: {
                 enableNotifications: true,
                 enableKnockingParticipants: true
               },
+              userInfo: {
+                role: isDoctor ? 'doctor' : 'patient'
+              }
             }}
             interfaceConfigOverwrite={{
               TOOLBAR_BUTTONS: [
