@@ -17,7 +17,7 @@ export default function WhatsAppFloat() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const whatsappNumber = '917994556262'; // Your business WhatsApp number with country code
+  const whatsappNumber = '917994556262'; // Doctor's WhatsApp number with country code
   
   const handleWhatsAppRedirect = () => {
     // Default message if user didn't provide one
