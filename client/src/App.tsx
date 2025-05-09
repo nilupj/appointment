@@ -47,6 +47,10 @@ function Router() {
           <Route path="/qikwell" component={Home} />
           <Route path="/hospital-profile" component={Home} />
           <Route path="/hospital-reach" component={Home} />
+          <Route path="/medicines" component={Medicines} />
+          <Route path="/for-corporates" component={ForCorporates} />
+          <Route path="/for-providers" component={ForProviders} />
+          <Route path="/security-help" component={SecurityHelp} />
           <Route path="*" component={NotFound} />
         </Switch>
       </main>
