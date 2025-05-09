@@ -63,9 +63,59 @@ export default function AdminDashboard() {
     }))
   });
 
-  const { data: doctors = [] } = useQuery({
+  const { data: doctors = [], isLoading: isDoctorsLoading } = useQuery({
     queryKey: ['/api/admin/doctors'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/doctors');
+      if (!response.ok) throw new Error('Failed to fetch doctors');
+      return response.json();
+    },
     enabled: user?.role === 'admin'
+  });
+
+  const createDoctorMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await fetch('/api/admin/doctors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to create doctor');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/api/admin/doctors']);
+      toast({ title: "Success", description: "Doctor added successfully" });
+    },
+  });
+
+  const updateDoctorMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const response = await fetch(`/api/admin/doctors/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to update doctor');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/api/admin/doctors']);
+      toast({ title: "Success", description: "Doctor updated successfully" });
+    },
+  });
+
+  const deleteDoctorMutation = useMutation({
+    mutationFn: async (id) => {
+      const response = await fetch(`/api/admin/doctors/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete doctor');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/api/admin/doctors']);
+      toast({ title: "Success", description: "Doctor deleted successfully" });
+    },
   });
 
   const { data: labTests = [] } = useQuery({
@@ -243,10 +293,87 @@ export default function AdminDashboard() {
               <CardTitle>Doctors Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <DataTable 
-                columns={doctorColumns} 
-                data={doctors}
-              />
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Registered Doctors</h3>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Add Doctor</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add New Doctor</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={form.handleSubmit((data) => {
+                        createDoctorMutation.mutate(data);
+                      })} className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="Enter doctor's name" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="specialty"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Specialty</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select specialty" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="general">General Medicine</SelectItem>
+                                  <SelectItem value="cardiology">Cardiology</SelectItem>
+                                  <SelectItem value="dermatology">Dermatology</SelectItem>
+                                  <SelectItem value="orthopedics">Orthopedics</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="consultationFee"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Consultation Fee</FormLabel>
+                              <FormControl>
+                                <Input type="number" {...field} placeholder="Enter fee" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" disabled={createDoctorMutation.isLoading}>
+                          {createDoctorMutation.isLoading ? "Adding..." : "Add Doctor"}
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <DataTable 
+                  columns={doctorColumns} 
+                  data={doctors.map(doctor => ({
+                    ...doctor,
+                    onEdit: (doctor) => {
+                      form.reset(doctor);
+                      updateDoctorMutation.mutate({ id: doctor.id, data: form.getValues() });
+                    },
+                    onDelete: (id) => {
+                      if (confirm('Are you sure you want to delete this doctor?')) {
+                        deleteDoctorMutation.mutate(id);
+                      }
+                    }
+                  }))}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
