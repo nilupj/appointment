@@ -198,36 +198,21 @@ const VideoConsult = () => {
                             <p className="font-semibold">₹{doctor.consultationFee}</p>
                           </div>
 
-                          <div className="space-y-3">
-                            {user ? (
-                              <>
-                                <Button 
-                                  className="primary-button w-full"
-                                  onClick={() => bookAppointment(doctor.id, doctor.availableSlots[0])}
-                                >
-                                  Book Consultation
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    const defaultMsg = `Hello Dr. ${doctor.name}, I would like to discuss my medical condition.`;
-                                    const whatsappUrl = `https://wa.me/91${doctor.phoneNumber}?text=${encodeURIComponent(defaultMsg)}`;
-                                    window.open(whatsappUrl, '_blank');
-                                  }}
-                                  className="w-full bg-green-500 hover:bg-green-600"
-                                >
-                                  <FaWhatsapp className="mr-2 h-4 w-4" />
-                                  Chat on WhatsApp
-                                </Button>
-                              </>
-                            ) : (
-                              <Button 
-                                className="primary-button w-full"
-                                asChild
-                              >
-                                <a href="/auth">Login to Book</a>
-                              </Button>
-                            )}
-                          </div>
+                          {user ? (
+                            <Button 
+                              className="primary-button w-full"
+                              onClick={() => bookAppointment(doctor.id, doctor.availableSlots[0])}
+                            >
+                              Book Consultation
+                            </Button>
+                          ) : (
+                            <Button 
+                              className="primary-button w-full"
+                              asChild
+                            >
+                              <a href="/auth">Login to Book</a>
+                            </Button>
+                          )}
 
                           <div className="mt-3">
                             <p className="text-xs text-center text-[#666666]">Next available slot: Today, {doctor.availableSlots[0]}</p>
