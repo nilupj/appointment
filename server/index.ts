@@ -1,10 +1,28 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { pool } from '@db'; // Added import for database pool
+import { pool } from '@db';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import cors from 'cors';
 
 const app = express();
-app.use(express.json());
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? 'https://yourdomain.repl.co' : 'http://localhost:5000',
+  credentials: true
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api/', limiter);
+
+app.use(express.json({ limit: '10kb' })); // Body limit
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {

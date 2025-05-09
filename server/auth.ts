@@ -42,13 +42,17 @@ export function setupAuth(app: Express) {
     store: new PostgresSessionStore({ 
       pool, 
       createTableIfMissing: true,
-      tableName: 'user_sessions'
+      tableName: 'user_sessions',
+      pruneSessionInterval: 60 // Cleanup expired sessions every minute
     }),
+    name: 'sessionId', // Change cookie name from default 'connect.sid'
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
-      sameSite: 'lax'
+      sameSite: 'strict',
+      path: '/',
+      domain: process.env.NODE_ENV === 'production' ? '.yourdomain.repl.co' : undefined
     }
   };
 
