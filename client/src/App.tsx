@@ -19,6 +19,10 @@ import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import AdminDashboard from './pages/AdminDashboard';
+import Medicines from './pages/Medicines';
+import ForCorporates from './pages/ForCorporates';
+import ForProviders from './pages/ForProviders';
+import SecurityHelp from './pages/SecurityHelp';
 
 function Router() {
   return (
