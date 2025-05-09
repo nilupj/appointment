@@ -310,8 +310,13 @@ export default function AdminDashboard() {
               <DataTable 
                 columns={[
                   { accessorKey: "name", header: "Test Name" },
+                  { accessorKey: "description", header: "Description" },
                   { accessorKey: "price", header: "Price" },
-                  { accessorKey: "discountedPrice", header: "Discounted Price" },
+                  { accessorKey: "discounted_price", header: "Discounted Price" },
+                  { accessorKey: "report_time", header: "Report Time" },
+                  { accessorKey: "home_collection", header: "Home Collection",
+                    cell: ({ row }) => row.original.home_collection ? "Yes" : "No"
+                  },
                   {
                     id: "actions",
                     cell: ({ row }) => (
