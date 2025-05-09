@@ -68,6 +68,11 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
+  const { data: labTests = [] } = useQuery({
+    queryKey: ['/api/admin/lab-tests'],
+    enabled: user?.role === 'admin'
+  });
+
   const createAppointmentMutation = useMutation({
     mutationFn: async (data) => {
       const response = await fetch('/api/admin/appointments', {
@@ -147,6 +152,7 @@ export default function AdminDashboard() {
         <TabsList className="w-full">
           <TabsTrigger value="appointments" className="flex-1">Appointments</TabsTrigger>
           <TabsTrigger value="doctors" className="flex-1">Doctors</TabsTrigger>
+          <TabsTrigger value="lab-tests" className="flex-1">Lab Tests</TabsTrigger>
           <TabsTrigger value="payments" className="flex-1">Payments</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
@@ -240,6 +246,97 @@ export default function AdminDashboard() {
               <DataTable 
                 columns={doctorColumns} 
                 data={doctors}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="lab-tests">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Lab Tests Management</CardTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Add Lab Test</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Lab Test</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={form.handleSubmit(async (data) => {
+                    try {
+                      const response = await fetch('/api/admin/lab-tests', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                      });
+                      if (!response.ok) throw new Error('Failed to add lab test');
+                      queryClient.invalidateQueries(['/api/admin/lab-tests']);
+                      toast({ title: "Success", description: "Lab test added successfully" });
+                    } catch (error) {
+                      toast({ title: "Error", description: "Failed to add lab test", variant: "destructive" });
+                    }
+                  })} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Test Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Enter test name" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} placeholder="Enter price" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Add Test</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <DataTable 
+                columns={[
+                  { accessorKey: "name", header: "Test Name" },
+                  { accessorKey: "price", header: "Price" },
+                  { accessorKey: "discountedPrice", header: "Discounted Price" },
+                  {
+                    id: "actions",
+                    cell: ({ row }) => (
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => {
+                          // Handle edit
+                        }}>Edit</Button>
+                        <Button variant="destructive" size="sm" onClick={async () => {
+                          if (confirm('Are you sure you want to delete this test?')) {
+                            try {
+                              await fetch(`/api/admin/lab-tests/${row.original.id}`, {
+                                method: 'DELETE'
+                              });
+                              queryClient.invalidateQueries(['/api/admin/lab-tests']);
+                              toast({ title: "Success", description: "Lab test deleted" });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Failed to delete lab test", variant: "destructive" });
+                            }
+                          }
+                        }}>Delete</Button>
+                      </div>
+                    )
+                  }
+                ]}
+                data={labTests || []}
               />
             </CardContent>
           </Card>
