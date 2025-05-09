@@ -36,15 +36,18 @@ function Router() {
           <Route path="/auth" component={AuthPage} />
           <ProtectedRoute path="/profile" component={UserProfile} />
           <ProtectedRoute path="/payment" component={PaymentPage} />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route component={NotFound} />
+          <ProtectedRoute path="/admin" component={AdminDashboard} />
+          <Route path="/app" component={Home} />
+          <Route path="/doctor-profile" component={FindDoctors} />
+          <Route path="/for-clinics" component={Home} />
+          <Route path="/ray" component={Home} />
+          <Route path="/reach" component={Home} />
+          <Route path="/pro" component={Home} />
+          <Route path="/insta" component={Home} />
+          <Route path="/qikwell" component={Home} />
+          <Route path="/hospital-profile" component={Home} />
+          <Route path="/hospital-reach" component={Home} />
+          <Route path="*" component={NotFound} />
         </Switch>
       </main>
       <Footer />
