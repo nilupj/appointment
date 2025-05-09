@@ -23,10 +23,13 @@ export default function WhatsAppFloat() {
     // Default message if user didn't provide one
     const defaultMessage = 'Hello! I have a question about MediConnect services.';
     // Use the phone number entered by the user, or default to the business number
-    const targetNumber = phoneNumber || whatsappNumber;
+    const targetNumber = phoneNumber.replace(/[^0-9]/g, '') || whatsappNumber;
+    
+    // Ensure number starts with country code
+    const formattedNumber = targetNumber.startsWith('91') ? targetNumber : `91${targetNumber}`;
     
     // Create WhatsApp URL with properly encoded message
-    const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(message || defaultMessage)}`;
+    const url = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(message || defaultMessage)}`;
     
     // Open WhatsApp in a new tab
     window.open(url, '_blank');
