@@ -199,8 +199,8 @@ export default function VideoConferenceComponent({
                 enableChat: true
               },
               moderator: isDoctor,
-              membersOnly: true,
-              enableLobby: true,
+              membersOnly: false,
+              enableLobby: false,
               enableClosePage: true,
               enableModeratorIndicator: true,
               disablePolls: true,
