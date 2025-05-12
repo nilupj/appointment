@@ -1,0 +1,392 @@
+~/workspace$ npm install
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+added 504 packages, and audited 505 packages in 26s
+
+63 packages are looking for funding
+  run `npm fund` for details
+
+5 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.3.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.3.0
+npm notice To update run: npm install -g npm@11.3.0
+npm notice
+~/workspace$ npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Database connection successful
+4:51:19 AM [express] serving on port 5000
+4:51:30 AM [express] GET /api/user 401 in 1ms :: {"message":"Not authenticated"}
+4:51:31 AM [express] GET /api/specialists 200 in 888ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:51:31 AM [express] GET /api/clinic-specialties 200 in 872ms :: [{"id":1,"name":"Period doubts or P…
+4:51:31 AM [express] GET /api/testimonials 200 in 894ms :: [{"id":1,"text":"Very helpful! For more t…
+4:51:31 AM [express] GET /api/articles 200 in 937ms :: [{"id":3,"title":"The Importance of Regular E…
+4:51:54 AM [express] GET /api/user 401 in 1ms :: {"message":"Not authenticated"}
+4:51:55 AM [express] GET /api/clinic-specialties 200 in 855ms :: [{"id":1,"name":"Period doubts or P…
+4:51:55 AM [express] GET /api/testimonials 200 in 859ms :: [{"id":1,"text":"Very helpful! For more t…
+4:51:55 AM [express] GET /api/specialists 200 in 909ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:51:55 AM [express] GET /api/articles 200 in 913ms :: [{"id":3,"title":"The Importance of Regular E…
+4:51:58 AM [express] GET /api/video-consult-doctors 200 in 229ms :: [{"id":6,"name":"Robert Lee","sp…
+4:52:02 AM [express] GET /api/user 401 in 0ms :: {"message":"Not authenticated"}
+4:52:18 AM [express] POST /api/login 200 in 2099ms :: {"id":1,"username":"admin","password":"25d2c90…
+4:52:19 AM [express] GET /api/specialists 304 in 874ms :: [{"id":1,"name":"Period doubts or Pregnanc…
+4:52:20 AM [express] GET /api/clinic-specialties 304 in 1598ms :: [{"id":1,"name":"Period doubts or …
+4:52:20 AM [express] GET /api/articles 304 in 1602ms :: [{"id":3,"title":"The Importance of Regular …
+4:52:20 AM [express] GET /api/testimonials 304 in 1608ms :: [{"id":1,"text":"Very helpful! For more …
+4:52:23 AM [express] GET /api/video-consult-doctors 304 in 918ms :: [{"id":6,"name":"Robert Lee","sp…
+Error in getUserVideoConsultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Error fetching user's video consultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+4:52:28 AM [express] GET /api/video-consult/appointments 500 in 930ms :: {"message":"Failed to fetch…
+Error in createVideoConsultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+Error booking video consultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+4:52:29 AM [express] POST /api/video-consult/book 500 in 1135ms :: {"message":"Failed to book consul…
+Error in getUserVideoConsultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Error fetching user's video consultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+4:52:37 AM [express] GET /api/video-consult/appointments 500 in 1559ms :: {"message":"Failed to fetc…
+Error in createVideoConsultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+Error booking video consultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+4:52:39 AM [express] POST /api/video-consult/book 500 in 1734ms :: {"message":"Failed to book consul…
+Error in getUserVideoConsultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Error fetching user's video consultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+4:52:45 AM [express] GET /api/video-consult/appointments 500 in 1526ms :: {"message":"Failed to fetc…
+4:53:16 AM [express] GET /api/surgeries 200 in 1597ms :: [{"id":1,"name":"Laser Eye Surgery (LASIK)"…
+Error in getUserVideoConsultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Error fetching user's video consultations: error: column appointments.room_id does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.getUserVideoConsultations (/home/runner/workspace/server/storage.ts:455:28)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:184:28) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '215',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+4:53:21 AM [express] GET /api/video-consult/appointments 500 in 1597ms :: {"message":"Failed to fetc…
+Error in createVideoConsultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+Error booking video consultation: error: column "room_id" of relation "appointments" does not exist
+    at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1345:74
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (/home/runner/workspace/node_modules/src/neon-serverless/session.ts:102:18)
+    at async Storage.createVideoConsultation (/home/runner/workspace/server/storage.ts:425:27)
+    at async <anonymous> (/home/runner/workspace/server/routes.ts:157:27) {
+  length: 133,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '116',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+4:53:23 AM [express] POST /api/video-consult/book 500 in 1796ms :: {"message":"Failed to book consul…
