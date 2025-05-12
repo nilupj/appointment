@@ -195,6 +195,7 @@ export default function VideoConferenceComponent({
               disableDeepLinking: true,
               resolution: 720,
               enableLobby: false,
+              membersOnly: false,
               enableModeratorIndicator: true,
               moderatorRoles: ['doctor'],
               testing: {
