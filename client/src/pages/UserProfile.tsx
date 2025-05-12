@@ -81,6 +81,8 @@ type PasswordFormValues = z.infer<typeof passwordSchema>;
 export default function UserProfile() {
   const { user, updateProfileMutation, changePasswordMutation, logoutMutation } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
+  const [labTests, setLabTests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -128,7 +130,7 @@ export default function UserProfile() {
   }
 
   const [appointments, setAppointments] = useState({ upcoming: [], past: [] });
-  
+
   useEffect(() => {
     // Fetch video consultations
     fetch('/api/video-consult/appointments')
@@ -137,7 +139,7 @@ export default function UserProfile() {
         const now = new Date();
         const upcoming = data.filter(a => new Date(a.date) > now);
         const past = data.filter(a => new Date(a.date) <= now);
-        
+
         // Check for live/upcoming consultations
         const liveConsultations = upcoming.filter(apt => {
           const aptDate = new Date(apt.date);
@@ -163,6 +165,21 @@ export default function UserProfile() {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    // Fetch lab tests
+    setIsLoading(true);
+    fetch('/api/lab-tests')
+      .then(res => res.json())
+      .then(data => {
+        setLabTests(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching lab tests:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
   const medicalRecords = [
     { id: 1, title: "Blood Test Results", date: "April 25, 2025", type: "Laboratory" },
     { id: 2, title: "Chest X-Ray Report", date: "March 15, 2025", type: "Radiology" },
@@ -172,18 +189,18 @@ export default function UserProfile() {
     { id: 1, name: "Dr. Priya Sharma", specialty: "Pediatrician" },
     { id: 2, name: "Dr. Robert Lee", specialty: "Psychiatrist" },
   ];
-  
+
   return (
     <>
       <Helmet>
         <title>My Profile | MediConnect</title>
         <meta name="description" content="Manage your MediConnect profile, appointments, and medical records" />
       </Helmet>
-      
+
       <div className="bg-gray-50 min-h-screen py-8">
         <div className="container">
           <h1 className="text-3xl font-bold mb-6">My Profile</h1>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Sidebar */}
             <div className="md:col-span-1">
@@ -199,7 +216,7 @@ export default function UserProfile() {
                     </h2>
                     <p className="text-sm text-gray-500">@{user.username}</p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Button 
                       variant={activeTab === "profile" ? "default" : "ghost"} 
@@ -225,6 +242,14 @@ export default function UserProfile() {
                       <FileTextIcon className="mr-2 h-4 w-4" />
                       Medical Records
                     </Button>
+                     <Button 
+                      variant={activeTab === "lab-tests" ? "default" : "ghost"} 
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("lab-tests")}
+                    >
+                      <ClipboardListIcon className="mr-2 h-4 w-4" />
+                      Lab Tests
+                    </Button>
                     <Button 
                       variant={activeTab === "saved" ? "default" : "ghost"} 
                       className="w-full justify-start"
@@ -249,9 +274,9 @@ export default function UserProfile() {
                       <LockIcon className="mr-2 h-4 w-4" />
                       Security
                     </Button>
-                    
+
                     <Separator className="my-4" />
-                    
+
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" className="w-full">Sign Out</Button>
@@ -275,7 +300,7 @@ export default function UserProfile() {
                 </CardContent>
               </Card>
             </div>
-            
+
             {/* Main Content */}
             <div className="md:col-span-3">
               {/* Profile Tab */}
@@ -374,7 +399,7 @@ export default function UserProfile() {
                   </CardContent>
                 </Card>
               )}
-              
+
               {/* Security Tab */}
               {activeTab === "security" && (
                 <Card>
@@ -451,7 +476,7 @@ export default function UserProfile() {
                   </CardContent>
                 </Card>
               )}
-              
+
               {/* Appointments Tab */}
               {activeTab === "appointments" && (
                 <Card>
@@ -465,7 +490,7 @@ export default function UserProfile() {
                         <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
                         <TabsTrigger value="past">Past</TabsTrigger>
                       </TabsList>
-                      
+
                       <TabsContent value="upcoming">
                         {appointments.upcoming.length > 0 ? (
                           <div className="space-y-4">
@@ -493,7 +518,7 @@ export default function UserProfile() {
                                         onClick={() => {
                                           const newDate = window.prompt('Enter new date (YYYY-MM-DD)');
                                           const newTime = window.prompt('Enter new time (HH:MM)');
-                                          
+
                                           if (newDate && newTime) {
                                             fetch(`/api/appointments/${appointment.id}`, {
                                               method: 'PUT',
@@ -537,7 +562,7 @@ export default function UserProfile() {
                           </div>
                         )}
                       </TabsContent>
-                      
+
                       <TabsContent value="past">
                         {appointments.past.length > 0 ? (
                           <div className="space-y-4">
@@ -611,7 +636,7 @@ export default function UserProfile() {
                   </CardContent>
                 </Card>
               )}
-              
+
               {/* Medical Records Tab */}
               {activeTab === "medical-records" && (
                 <Card>
@@ -659,7 +684,7 @@ export default function UserProfile() {
                   </CardFooter>
                 </Card>
               )}
-              
+
               {/* Saved Doctors Tab */}
               {activeTab === "saved" && (
                 <Card>
@@ -701,7 +726,7 @@ export default function UserProfile() {
                   </CardContent>
                 </Card>
               )}
-              
+
               {/* Payment Methods Tab */}
               {activeTab === "payments" && (
                 <Card>
@@ -716,6 +741,50 @@ export default function UserProfile() {
                       <p className="text-gray-500 mb-4">You haven't added any payment methods yet.</p>
                       <Button>Add Payment Method</Button>
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Lab Tests Tab */}
+              {activeTab === "lab-tests" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Lab Tests</CardTitle>
+                    <CardDescription>View your lab test bookings and reports</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {isLoading ? (
+                      <div>Loading...</div>
+                    ) : labTests?.length > 0 ? (
+                      <div className="space-y-4">
+                        {labTests.map((test) => (
+                          <Card key={test.id}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h3 className="font-semibold">{test.testName}</h3>
+                                  <p className="text-sm text-muted-foreground">
+                                    Booked for: {new Date(test.bookingDate).toLocaleDateString()}
+                                  </p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Status: {test.status}
+                                  </p>
+                                </div>
+                                {test.reportUrl && (
+                                  <Button asChild>
+                                    <a href={test.reportUrl} target="_blank" rel="noopener noreferrer">
+                                      View Report
+                                    </a>
+                                  </Button>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>No lab tests booked yet.</p>
+                    )}
                   </CardContent>
                 </Card>
               )}
