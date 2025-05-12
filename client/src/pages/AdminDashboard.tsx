@@ -450,18 +450,124 @@ export default function AdminDashboard() {
                   { accessorKey: "name", header: "Test Name" },
                   { accessorKey: "description", header: "Description" },
                   { accessorKey: "price", header: "Price" },
-                  { accessorKey: "discounted_price", header: "Discounted Price" },
-                  { accessorKey: "report_time", header: "Report Time" },
-                  { accessorKey: "home_collection", header: "Home Collection",
-                    cell: ({ row }) => row.original.home_collection ? "Yes" : "No"
+                  { accessorKey: "discountedPrice", header: "Discounted Price" },
+                  { accessorKey: "reportTime", header: "Report Time" },
+                  { accessorKey: "homeCollection", header: "Home Collection",
+                    cell: ({ row }) => row.original.homeCollection ? "Yes" : "No"
                   },
                   {
                     id: "actions",
                     cell: ({ row }) => (
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => {
-                          // Handle edit
-                        }}>Edit</Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">Edit</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Edit Lab Test</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={form.handleSubmit(async (data) => {
+                              try {
+                                await fetch(`/api/admin/lab-tests/${row.original.id}`, {
+                                  method: 'PUT',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify(data)
+                                });
+                                queryClient.invalidateQueries(['/api/admin/lab-tests']);
+                                toast({ title: "Success", description: "Lab test updated" });
+                              } catch (error) {
+                                toast({ title: "Error", description: "Failed to update lab test", variant: "destructive" });
+                              }
+                            })} className="space-y-4">
+                              <FormField
+                                control={form.control}
+                                name="name"
+                                defaultValue={row.original.name}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Test Name</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="description"
+                                defaultValue={row.original.description}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="price"
+                                defaultValue={row.original.price}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Price</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" {...field} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="discountedPrice"
+                                defaultValue={row.original.discountedPrice}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Discounted Price</FormLabel>
+                                    <FormControl>
+                                      <Input type="number" {...field} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="reportTime"
+                                defaultValue={row.original.reportTime}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Report Time</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="homeCollection"
+                                defaultValue={row.original.homeCollection}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Home Collection</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value ? "yes" : "no"}>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="yes">Yes</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </FormItem>
+                                )}
+                              />
+                              <Button type="submit">Update</Button>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
                         <Button variant="destructive" size="sm" onClick={async () => {
                           if (confirm('Are you sure you want to delete this test?')) {
                             try {
@@ -606,8 +712,146 @@ export default function AdminDashboard() {
 
         <TabsContent value="lab-bookings">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Lab Test Bookings</CardTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Add Booking</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Booking</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={form.handleSubmit(async (data) => {
+                    try {
+                      const response = await fetch('/api/admin/lab-bookings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                      });
+                      if (!response.ok) throw new Error('Failed to create booking');
+                      queryClient.invalidateQueries(['/api/admin/lab-bookings']);
+                      toast({ title: "Success", description: "Booking created successfully" });
+                    } catch (error) {
+                      toast({ title: "Error", description: "Failed to create booking", variant: "destructive" });
+                    }
+                  })} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="patientName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Patient Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="patientAge"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Age</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="patientGender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gender</FormLabel>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select gender" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="patientPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="testId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Test</FormLabel>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select test" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {labTests?.map((test) => (
+                                <SelectItem key={test.id} value={test.id.toString()}>
+                                  {test.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bookingDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date</FormLabel>
+                          <FormControl>
+                            <Input type="datetime-local" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="timeSlot"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Time Slot</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="collectionAddress"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Collection Address</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Create Booking</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </CardHeader>
             <CardContent>
               <DataTable 
