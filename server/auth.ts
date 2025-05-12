@@ -91,37 +91,70 @@ export function setupAuth(app: Express) {
   // Authentication routes
   app.post("/api/register", async (req, res) => {
     try {
+      const { username, email, password, firstName, lastName, phone } = req.body;
+
+      // Validate required fields
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: "Username, email and password are required" });
+      }
+
+      // Username validation
+      if (username.length < 3) {
+        return res.status(400).json({ message: "Username must be at least 3 characters long" });
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+
+      // Password validation
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters long" });
+      }
+
       const existingUser = await db.query.users.findFirst({
-        where: eq(users.username, req.body.username)
+        where: eq(users.username, username)
       });
       
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      // Check if email is already registered
       const emailExists = await db.query.users.findFirst({
-        where: eq(users.email, req.body.email)
+        where: eq(users.email, email)
       });
 
       if (emailExists) {
         return res.status(400).json({ message: "Email already registered" });
       }
 
-      const hashedPassword = await hashPassword(req.body.password);
+      const hashedPassword = await hashPassword(password);
       
       const [user] = await db.insert(users).values({
-        ...req.body,
+        username,
+        email,
         password: hashedPassword,
+        firstName,
+        lastName,
+        phone,
+        role: 'patient'
       }).returning();
 
       req.login(user, (err) => {
-        if (err) return res.status(500).json({ message: "Login failed after registration" });
+        if (err) {
+          console.error("Login after registration failed:", err);
+          return res.status(500).json({ message: "Login failed after registration" });
+        }
         return res.status(201).json(user);
       });
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ message: "Registration failed" });
+      res.status(500).json({ 
+        message: "Registration failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
