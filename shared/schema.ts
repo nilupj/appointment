@@ -106,6 +106,17 @@ export const labTests = pgTable("lab_tests", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const labReports = pgTable("lab_reports", {
+  id: serial("id").primaryKey(),
+  bookingId: integer("booking_id").references(() => labBookings.id),
+  reportUrl: text("report_url").notNull(),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  status: text("status").default("pending").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const labBookings = pgTable("lab_bookings", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),

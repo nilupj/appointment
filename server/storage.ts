@@ -760,6 +760,33 @@ async deleteLabTest(id: number): Promise<void> {
     }
   }
 
+  async createLabReport(data: {bookingId: number, reportUrl: string, notes?: string}): Promise<any> {
+    try {
+      const [report] = await db.insert(schema.labReports).values({
+        bookingId: data.bookingId,
+        reportUrl: data.reportUrl,
+        notes: data.notes,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      return report;
+    } catch (error) {
+      console.error("Error in createLabReport:", error);
+      throw error;
+    }
+  }
+
+  async getLabReportsByBooking(bookingId: number): Promise<any[]> {
+    try {
+      const reports = await db.select().from(schema.labReports)
+        .where(eq(schema.labReports.bookingId, bookingId));
+      return reports;
+    } catch (error) {
+      console.error("Error in getLabReportsByBooking:", error);
+      throw error;
+    }
+  }
+
   // Search suggestions
   async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
     try {
