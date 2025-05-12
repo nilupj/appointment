@@ -621,9 +621,10 @@ export default function AdminDashboard() {
                     cell: ({ row }) => new Date(row.getValue("bookingDate")).toLocaleDateString()
                   },
                   { accessorKey: "timeSlot", header: "Time Slot" },
-                  { accessorKey: "status", header: "Status" },
-                  {
-                    id: "actions",
+                  { accessorKey: "collectionAddress", header: "Collection Address" },
+                  { 
+                    accessorKey: "status", 
+                    header: "Status",
                     cell: ({ row }) => (
                       <div className="flex gap-2">
                         <Select
@@ -652,6 +653,31 @@ export default function AdminDashboard() {
                             <SelectItem value="cancelled">Cancelled</SelectItem>
                           </SelectContent>
                         </Select>
+                      </div>
+                    )
+                  },
+                  {
+                    id: "actions",
+                    header: "Actions",
+                    cell: ({ row }) => (
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => {
+                          toast({ 
+                            title: "Details", 
+                            description: `Collection Address: ${row.original.collectionAddress || 'Not provided'}` 
+                          });
+                        }}>View</Button>
+                        <Button variant="destructive" size="sm" onClick={async () => {
+                          try {
+                            await fetch(`/api/admin/lab-bookings/${row.original.id}`, {
+                              method: 'DELETE'
+                            });
+                            queryClient.invalidateQueries(['/api/admin/lab-bookings']);
+                            toast({ title: "Success", description: "Booking deleted" });
+                          } catch (error) {
+                            toast({ title: "Error", description: "Failed to delete booking", variant: "destructive" });
+                          }
+                        }}>Delete</Button>
                       </div>
                     )
                   }
