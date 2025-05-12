@@ -36,6 +36,16 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
+  const { data: offlineAppointments = [] } = useQuery({
+    queryKey: ['/api/admin/offline-appointments'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/offline-appointments');
+      if (!response.ok) throw new Error('Failed to fetch offline appointments');
+      return response.json();
+    },
+    enabled: user?.role === 'admin'
+  });
+
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['/api/admin/appointments'],
     queryFn: async () => {
