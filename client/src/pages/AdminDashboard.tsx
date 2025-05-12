@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "@/components/admin/appointments-columns";
@@ -52,7 +51,7 @@ export default function AdminDashboard() {
       const response = await fetch('/api/admin/appointments');
       if (!response.ok) throw new Error('Failed to fetch appointments');
       const data = await response.json();
-      
+
       // Check for live/upcoming consultations
       const now = new Date();
       const liveConsultations = data.filter(apt => {
@@ -260,7 +259,7 @@ export default function AdminDashboard() {
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Enter phone number" />
-                          </FormControl>
+                          FormControl>
                         </FormItem>
                       )}
                     />
@@ -797,21 +796,21 @@ export default function AdminDashboard() {
                             },
                             body: JSON.stringify(data),
                           });
-                          
+
                           if (!response.ok) {
                             throw new Error('Failed to add payment method');
                           }
-                          
+
                           toast({
                             title: "Success",
                             description: "Payment method added successfully",
                           });
-                          
+
                           // Close dialog and reset form
                           const closeButton = document.querySelector('[role="dialog"] button[type="button"]');
                           if (closeButton) closeButton.click();
                           form.reset();
-                          
+
                         } catch (error) {
                           toast({
                             title: "Error",
@@ -946,7 +945,7 @@ export default function AdminDashboard() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Gender</FormLabel>
-                          <Select onValueChange={field.onChange}>
+                          <Select onValueChange={field.onChange):
                             <SelectTrigger>
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>

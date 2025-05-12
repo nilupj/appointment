@@ -435,7 +435,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(bookings);
     } catch (error) {
       console.error("Error fetching lab bookings:", error);
-      res.status(500).json({ message: "Failed to fetch lab bookings" });
+      res.status(500).json({ error: "Failed to fetch lab bookings" });
+    }
+  });
+
+  app.post(`${apiPrefix}/admin/lab-bookings`, async (req, res) => {
+    try {
+      const booking = await db.insert(schema.labBookings).values(req.body).returning();
+      res.json(booking);
+    } catch (error) {
+      console.error("Error creating lab booking:", error);
+      res.status(500).json({ error: "Failed to create lab booking" });
     }
   });
 
