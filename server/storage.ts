@@ -752,8 +752,17 @@ async deleteLabTest(id: number): Promise<void> {
   // Lab bookings
   async getLabBookings(): Promise<any[]> {
     try {
-      const bookings = await db.select().from(schema.labBookings);
-      return bookings;
+      const bookings = await db.query.labBookings.findMany({
+        with: {
+          test: true,
+          user: true
+        },
+        orderBy: [desc(schema.labBookings.createdAt)]
+      });
+      return bookings.map(booking => ({
+        ...booking,
+        testName: booking.test?.name || 'Unknown Test'
+      }));
     } catch (error) {
       console.error("Error in getLabBookings:", error);
       throw error;
