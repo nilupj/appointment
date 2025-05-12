@@ -106,6 +106,22 @@ export const labTests = pgTable("lab_tests", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const labBookings = pgTable("lab_bookings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  testId: integer("test_id").references(() => labTests.id),
+  patientName: text("patient_name").notNull(),
+  patientAge: text("patient_age").notNull(),
+  patientGender: text("patient_gender").notNull(),
+  patientPhone: text("patient_phone").notNull(),
+  collectionAddress: text("collection_address"),
+  bookingDate: timestamp("booking_date").notNull(),
+  timeSlot: text("time_slot").notNull(),
+  status: text("status").default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),

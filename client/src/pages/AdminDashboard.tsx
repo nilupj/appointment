@@ -26,6 +26,16 @@ export default function AdminDashboard() {
     return <div>Access denied. Admin only.</div>;
   }
 
+  const { data: labBookings = [] } = useQuery({
+    queryKey: ['/api/admin/lab-bookings'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/lab-bookings');
+      if (!response.ok) throw new Error('Failed to fetch lab bookings');
+      return response.json();
+    },
+    enabled: user?.role === 'admin'
+  });
+
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['/api/admin/appointments'],
     queryFn: async () => {
@@ -203,6 +213,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="appointments" className="flex-1">Appointments</TabsTrigger>
           <TabsTrigger value="doctors" className="flex-1">Doctors</TabsTrigger>
           <TabsTrigger value="lab-tests" className="flex-1">Lab Tests</TabsTrigger>
+          <TabsTrigger value="lab-bookings" className="flex-1">Lab Bookings</TabsTrigger>
           <TabsTrigger value="payments" className="flex-1">Payments</TabsTrigger>
         </TabsList>
         <TabsContent value="appointments">
@@ -589,6 +600,64 @@ export default function AdminDashboard() {
                   ]}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="lab-bookings">
+          <Card>
+            <CardHeader>
+              <CardTitle>Lab Test Bookings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DataTable 
+                columns={[
+                  { accessorKey: "patientName", header: "Patient Name" },
+                  { accessorKey: "patientAge", header: "Age" },
+                  { accessorKey: "patientGender", header: "Gender" },
+                  { accessorKey: "patientPhone", header: "Phone" },
+                  { accessorKey: "testName", header: "Test Name" },
+                  { accessorKey: "bookingDate", header: "Date",
+                    cell: ({ row }) => new Date(row.getValue("bookingDate")).toLocaleDateString()
+                  },
+                  { accessorKey: "timeSlot", header: "Time Slot" },
+                  { accessorKey: "status", header: "Status" },
+                  {
+                    id: "actions",
+                    cell: ({ row }) => (
+                      <div className="flex gap-2">
+                        <Select
+                          value={row.original.status}
+                          onValueChange={async (value) => {
+                            try {
+                              await fetch(`/api/admin/lab-bookings/${row.original.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: value })
+                              });
+                              queryClient.invalidateQueries(['/api/admin/lab-bookings']);
+                              toast({ title: "Success", description: "Booking status updated" });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="w-[130px]">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )
+                  }
+                ]} 
+                data={labBookings || []}
+              />
             </CardContent>
           </Card>
         </TabsContent>
