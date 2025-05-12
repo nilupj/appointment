@@ -749,7 +749,19 @@ async deleteLabTest(id: number): Promise<void> {
   }
 }
 
-async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
+  // Lab bookings
+  async getLabBookings(): Promise<any[]> {
+    try {
+      const bookings = await db.select().from(schema.labBookings);
+      return bookings;
+    } catch (error) {
+      console.error("Error in getLabBookings:", error);
+      throw error;
+    }
+  }
+
+  // Search suggestions
+  async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
     try {
       // Search for doctors
       const doctors = await db.query.doctors.findMany({
@@ -793,5 +805,5 @@ export async function getLabTests() {
 }
 
 export async function getLabBookings() {
-  return await db.select().from(labBookings);
+  return await storage.getLabBookings();
 }
