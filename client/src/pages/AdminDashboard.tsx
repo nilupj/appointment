@@ -612,16 +612,16 @@ export default function AdminDashboard() {
             <CardContent>
               <DataTable 
                 columns={[
-                  { accessorKey: "patientName", header: "Patient Name" },
-                  { accessorKey: "patientAge", header: "Age" },
-                  { accessorKey: "patientGender", header: "Gender" },
-                  { accessorKey: "patientPhone", header: "Phone" },
-                  { accessorKey: "testName", header: "Test Name" },
-                  { accessorKey: "bookingDate", header: "Date",
-                    cell: ({ row }) => new Date(row.getValue("bookingDate")).toLocaleDateString()
+                  { accessorKey: "patient_name", header: "Patient Name" },
+                  { accessorKey: "patient_age", header: "Age" },
+                  { accessorKey: "patient_gender", header: "Gender" },
+                  { accessorKey: "patient_phone", header: "Phone" },
+                  { accessorKey: "test_id", header: "Test ID" },
+                  { accessorKey: "booking_date", header: "Date",
+                    cell: ({ row }) => new Date(row.getValue("booking_date")).toLocaleDateString()
                   },
-                  { accessorKey: "timeSlot", header: "Time Slot" },
-                  { accessorKey: "collectionAddress", header: "Collection Address" },
+                  { accessorKey: "time_slot", header: "Time Slot" },
+                  { accessorKey: "collection_address", header: "Collection Address" },
                   { 
                     accessorKey: "status", 
                     header: "Status",
