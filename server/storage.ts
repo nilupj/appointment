@@ -785,3 +785,13 @@ async getSearchSuggestions(query: string): Promise<SearchSuggestion[]> {
 }
 
 export const storage = new Storage();
+
+import { labTests, labBookings } from "@shared/schema";
+
+export async function getLabTests() {
+  return await db.select().from(labTests);
+}
+
+export async function getLabBookings() {
+  return await db.select().from(labBookings);
+}

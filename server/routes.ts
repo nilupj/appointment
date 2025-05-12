@@ -428,6 +428,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Lab bookings endpoints
+  app.get(`${apiPrefix}/admin/lab-bookings`, isAdmin, async (req, res) => {
+    try {
+      const bookings = await storage.getLabBookings();
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching lab bookings:", error);
+      res.status(500).json({ message: "Failed to fetch lab bookings" });
+    }
+  });
+
   app.post(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
     try {
       const test = await storage.createLabTest(req.body);
