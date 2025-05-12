@@ -210,12 +210,182 @@ export default function AdminDashboard() {
     <div className="container mx-auto py-10">
       <Tabs defaultValue="appointments">
         <TabsList className="w-full">
-          <TabsTrigger value="appointments" className="flex-1">Appointments</TabsTrigger>
+          <TabsTrigger value="appointments" className="flex-1">Online Appointments</TabsTrigger>
+          <TabsTrigger value="offline-appointments" className="flex-1">Offline Appointments</TabsTrigger>
           <TabsTrigger value="doctors" className="flex-1">Doctors</TabsTrigger>
           <TabsTrigger value="lab-tests" className="flex-1">Lab Tests</TabsTrigger>
           <TabsTrigger value="lab-bookings" className="flex-1">Lab Bookings</TabsTrigger>
           <TabsTrigger value="payments" className="flex-1">Payments</TabsTrigger>
         </TabsList>
+        <TabsContent value="offline-appointments">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Offline Appointments Management</CardTitle>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Book Offline Appointment</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Book New Offline Appointment</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="patientName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Patient Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Enter patient name" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="patientPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Enter phone number" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="doctorId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Doctor</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select doctor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {doctors.map((doctor) => (
+                                <SelectItem key={doctor.id} value={doctor.id}>
+                                  {doctor.name} - {doctor.specialty}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="appointmentDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date & Time</FormLabel>
+                          <FormControl>
+                            <Input type="datetime-local" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="symptoms"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Symptoms/Notes</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Enter symptoms or notes" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="paymentStatus"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Payment Status</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select payment status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="paid">Paid</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit">Book Appointment</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <DataTable 
+                columns={[
+                  { accessorKey: "patientName", header: "Patient Name" },
+                  { accessorKey: "patientPhone", header: "Phone" },
+                  { accessorKey: "doctorName", header: "Doctor" },
+                  { accessorKey: "appointmentDate", header: "Date",
+                    cell: ({ row }) => new Date(row.getValue("appointmentDate")).toLocaleDateString()
+                  },
+                  { accessorKey: "appointmentTime", header: "Time",
+                    cell: ({ row }) => new Date(row.getValue("appointmentDate")).toLocaleTimeString()
+                  },
+                  { accessorKey: "symptoms", header: "Symptoms" },
+                  { accessorKey: "paymentStatus", header: "Payment" },
+                  { accessorKey: "status", header: "Status",
+                    cell: ({ row }) => (
+                      <Select
+                        value={row.original.status}
+                        onValueChange={async (value) => {
+                          try {
+                            await fetch(`/api/admin/offline-appointments/${row.original.id}`, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ status: value })
+                            });
+                            queryClient.invalidateQueries(['/api/admin/offline-appointments']);
+                            toast({ title: "Success", description: "Status updated" });
+                          } catch (error) {
+                            toast({ title: "Error", description: "Failed to update status" });
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="scheduled">Scheduled</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )
+                  },
+                  {
+                    id: "actions",
+                    cell: ({ row }) => (
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => {
+                          // Edit appointment
+                          handleEdit(row.original);
+                        }}>Edit</Button>
+                        <Button variant="destructive" size="sm" onClick={() => {
+                          // Delete appointment
+                          handleDelete(row.original.id);
+                        }}>Delete</Button>
+                      </div>
+                    )
+                  }
+                ]} 
+                data={offlineAppointments || []}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="appointments">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
