@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["lsof"]
+packages = ["lsof", "postgresql_15_jit"]
 
 [deployment]
 deploymentTarget = "autoscale"
