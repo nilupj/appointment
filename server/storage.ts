@@ -682,9 +682,7 @@ class Storage {
   // Lab Tests methods
 async getLabTests(): Promise<any[]> {
   try {
-    const tests = await db.query.labTests.findMany({
-      orderBy: [desc(schema.labTests.createdAt)]
-    });
+    const tests = await db.select().from(schema.labTests);
     return tests.map(test => ({
       id: test.id,
       name: test.name || '',

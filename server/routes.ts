@@ -506,6 +506,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+  // Lab Tests endpoints
+  app.get(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
+    try {
+      const tests = await storage.getLabTests();
+      res.json(tests);
+    } catch (error) {
+      console.error("Error fetching lab tests:", error);
+      res.status(500).json({ message: "Failed to fetch lab tests" });
+    }
+  });
+
   // --- Added Doctor Management Endpoints (Placeholders) ---
   app.get(`${apiPrefix}/admin/doctors`, isAdmin, async (req, res) => {
     try {
