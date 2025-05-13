@@ -777,6 +777,20 @@ async deleteLabTest(id: number): Promise<void> {
     }
   }
 
+  async createLabBooking(data: any): Promise<any> {
+    try {
+      const [booking] = await db.insert(schema.labBookings).values({
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      return booking;
+    } catch (error) {
+      console.error("Error in createLabBooking:", error);
+      throw error;
+    }
+  }
+
   async createLabReport(data: {bookingId: number, reportUrl: string, notes?: string}): Promise<any> {
     try {
       const [report] = await db.insert(schema.labReports).values({

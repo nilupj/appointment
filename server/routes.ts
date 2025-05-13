@@ -441,7 +441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post(`${apiPrefix}/admin/lab-bookings`, async (req, res) => {
     try {
-      const booking = await db.insert(schema.labBookings).values(req.body).returning();
+      const booking = await storage.createLabBooking(req.body);
       res.json(booking);
     } catch (error) {
       console.error("Error creating lab booking:", error);
