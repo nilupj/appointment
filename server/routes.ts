@@ -432,10 +432,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/admin/lab-bookings`, isAdmin, async (req, res) => {
     try {
       const bookings = await storage.getLabBookings();
+      if (!bookings) {
+        return res.status(404).json({ message: "No bookings found" });
+      }
       res.json(bookings);
     } catch (error) {
       console.error("Error fetching lab bookings:", error);
-      res.status(500).json({ error: "Failed to fetch lab bookings" });
+      res.status(500).json({ message: "Failed to fetch lab bookings" });
     }
   });
 

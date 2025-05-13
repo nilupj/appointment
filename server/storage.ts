@@ -831,24 +831,26 @@ async deleteLabTest(id: number): Promise<void> {
   // Lab bookings
   async getLabBookings(): Promise<any[]> {
     try {
-      const bookings = await db.select().from(schema.labBookings)
+      const bookings = await db
+        .select({
+          id: schema.labBookings.id,
+          patientName: schema.labBookings.patientName,
+          patientAge: schema.labBookings.patientAge,
+          patientGender: schema.labBookings.patientGender,
+          patientPhone: schema.labBookings.patientPhone,
+          bookingDate: schema.labBookings.bookingDate,
+          timeSlot: schema.labBookings.timeSlot,
+          status: schema.labBookings.status,
+          collectionAddress: schema.labBookings.collectionAddress,
+          testId: schema.labBookings.testId,
+          createdAt: schema.labBookings.createdAt,
+          testName: schema.labTests.name
+        })
+        .from(schema.labBookings)
         .leftJoin(schema.labTests, eq(schema.labBookings.testId, schema.labTests.id))
         .orderBy(desc(schema.labBookings.createdAt));
-        
-      return bookings.map(booking => ({
-        id: booking.lab_bookings.id,
-        patientName: booking.lab_bookings.patientName,
-        patientAge: booking.lab_bookings.patientAge,
-        patientGender: booking.lab_bookings.patientGender,
-        patientPhone: booking.lab_bookings.patientPhone,
-        bookingDate: booking.lab_bookings.bookingDate,
-        timeSlot: booking.lab_bookings.timeSlot,
-        status: booking.lab_bookings.status,
-        collectionAddress: booking.lab_bookings.collectionAddress,
-        testName: booking.lab_tests?.name || 'Unknown Test',
-        testId: booking.lab_bookings.testId,
-        createdAt: booking.lab_bookings.createdAt
-      }));
+
+      return bookings;
     } catch (error) {
       console.error("Error in getLabBookings:", error);
       throw error;
