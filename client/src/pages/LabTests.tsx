@@ -81,45 +81,60 @@ const LabTests = () => {
   // Sample tests
   const labTests: LabTest[] = [
     {
-      id: 101,
-      name: "Complete Blood Count (CBC)",
-      description: "Measures various components of your blood to provide insight into your overall health.",
+      id: 1,
+      name: "Basic Blood Test",
+      description: "A routine blood test to check overall health.",
+      price: 500,
+      discountedPrice: 400,
+      popularFor: ["General Health"],
+      preparationInfo: "Fast for 8 hours before test.",
+      reportTime: "24 hours",
+      homeCollection: true
+    },
+    {
+      id: 2,
+      name: "Complete Blood Count",
+      description: "Checks overall health and detects disorders",
+      price: 500,
+      discountedPrice: 400,
+      popularFor: ["Fatigue", "Infection"],
+      preparationInfo: "No special preparation needed",
+      reportTime: "24 hours",
+      homeCollection: true
+    },
+    {
+      id: 4,
+      name: "Lipid Profile",
+      description: "Measures cholesterol and triglyceride levels to assess cardiovascular risk.",
+      price: 1000,
+      discountedPrice: 850,
+      popularFor: ["Heart risk", "Obesity", "Diabetes"],
+      preparationInfo: "Fasting for 9–12 hours is recommended.",
+      reportTime: "12 hours",
+      homeCollection: true
+    },
+    {
+      id: 5,
+      name: "Thyroid Profile",
+      description: "Checks T3, T4, and TSH levels to evaluate thyroid gland function.",
       price: 800,
       discountedPrice: 650,
-      popularFor: ["Anemia", "Infection", "General health assessment"],
-      preparationInfo: "No special preparation required. Fasting not necessary.",
-      reportTime: "Same day",
+      popularFor: ["Weight changes", "Hair loss", "Fatigue"],
+      preparationInfo: "No special preparation needed.",
+      reportTime: "24 hours",
       homeCollection: true
     },
     {
-      id: 102,
-      name: "Thyroid Profile",
-      description: "Evaluates thyroid function by measuring thyroid hormone levels.",
+      id: 6,
+      name: "Liver Function Test (LFT)",
+      description: "A panel of blood tests used to assess the health of the liver.",
       price: 1200,
       discountedPrice: 950,
-      popularFor: ["Hypothyroidism", "Hyperthyroidism", "Goiter"],
-      preparationInfo: "12-hour fasting recommended.",
-      reportTime: "Next day",
+      popularFor: ["Jaundice", "Abdominal pain", "Fatigue"],
+      preparationInfo: "Fasting may be required as per doctor's advice.",
+      reportTime: "24 hours",
       homeCollection: true
-    },
-    {
-      id: 103,
-      name: "Lipid Profile",
-      description: "Measures cholesterol and triglycerides to assess heart disease risk.",
-      price: 900,
-      discountedPrice: 750,
-      popularFor: ["Heart disease", "Stroke risk", "Cholesterol monitoring"],
-      preparationInfo: "8-12 hour fasting required.",
-      reportTime: "Same day",
-      homeCollection: true
-    },
-    {
-      id: 104,
-      name: "Diabetes Screening (HbA1c)",
-      description: "Measures average blood glucose levels over the past 2-3 months.",
-      price: 850,
-      discountedPrice: 700,
-      popularFor: ["Diabetes diagnosis", "Diabetes monitoring", "Pre-diabetes screening"],
+    }
       preparationInfo: "No fasting required.",
       reportTime: "Next day",
       homeCollection: true
