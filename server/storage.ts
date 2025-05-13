@@ -709,6 +709,16 @@ async createLabTest(data: any): Promise<any> {
     if (!data.name || !data.price) {
       throw new Error("Name and price are required");
     }
+    
+    // Check if test already exists
+    const existingTest = await db.query.labTests.findFirst({
+      where: eq(schema.labTests.name, data.name)
+    });
+
+    if (existingTest) {
+      return existingTest;
+    }
+
     const [test] = await db.insert(schema.labTests).values({
       name: data.name,
       description: data.description || '',
@@ -721,6 +731,65 @@ async createLabTest(data: any): Promise<any> {
       createdAt: new Date(),
       updatedAt: new Date()
     }).returning();
+
+    // Add default lab tests
+    const defaultTests = [
+      {
+        name: "Complete Blood Count (CBC)",
+        description: "Measures various components of your blood to provide insight into your overall health.",
+        price: 800,
+        discountedPrice: 650,
+        popularFor: ["Anemia", "Infection", "General health assessment"],
+        preparationInfo: "No special preparation required. Fasting not necessary.",
+        reportTime: "Same day",
+        homeCollection: true
+      },
+      {
+        name: "Thyroid Profile",
+        description: "Evaluates thyroid function by measuring thyroid hormone levels.",
+        price: 1200,
+        discountedPrice: 950,
+        popularFor: ["Hypothyroidism", "Hyperthyroidism", "Goiter"],
+        preparationInfo: "12-hour fasting recommended.",
+        reportTime: "Next day",
+        homeCollection: true
+      },
+      {
+        name: "Lipid Profile",
+        description: "Measures cholesterol and triglycerides to assess heart disease risk.",
+        price: 900,
+        discountedPrice: 750,
+        popularFor: ["Heart disease", "Stroke risk", "Cholesterol monitoring"],
+        preparationInfo: "8-12 hour fasting required.",
+        reportTime: "Same day",
+        homeCollection: true
+      },
+      {
+        name: "Diabetes Screening (HbA1c)",
+        description: "Measures average blood glucose levels over the past 2-3 months.",
+        price: 850,
+        discountedPrice: 700,
+        popularFor: ["Diabetes diagnosis", "Diabetes monitoring", "Pre-diabetes screening"],
+        preparationInfo: "No special preparation required.",
+        reportTime: "Same day",
+        homeCollection: true
+      }
+    ];
+
+    for (const testData of defaultTests) {
+      const exists = await db.query.labTests.findFirst({
+        where: eq(schema.labTests.name, testData.name)
+      });
+
+      if (!exists) {
+        await db.insert(schema.labTests).values({
+          ...testData,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+      }
+    }
+
     return test;
   } catch (error) {
     console.error("Error in createLabTest:", error);
