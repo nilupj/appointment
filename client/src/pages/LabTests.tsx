@@ -134,7 +134,13 @@ const LabTests = () => {
       preparationInfo: "Fasting may be required as per doctor's advice.",
       reportTime: "24 hours",
       homeCollection: true
-    }
+    },
+    {
+      name: "Diabetes Screening (HbA1c)",
+      description: "Measures average blood glucose levels over the past 2-3 months.",
+      price: 850,
+      discountedPrice: 700,
+      popularFor: ["Diabetes diagnosis", "Diabetes monitoring", "Pre-diabetes screening"],
       preparationInfo: "No fasting required.",
       reportTime: "Next day",
       homeCollection: true
