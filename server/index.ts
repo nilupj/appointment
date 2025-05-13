@@ -89,7 +89,7 @@ app.use((req, res, next) => {
       server.listen({
         port,
         host: "0.0.0.0",
-        reusePort: true,
+        reusePort: false,
         backlog: 100,
         keepAliveTimeout: 65000
       }, () => {
