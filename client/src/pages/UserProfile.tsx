@@ -755,35 +755,34 @@ export default function UserProfile() {
                   <CardContent>
                     {isLoading ? (
                       <div>Loading...</div>
-                    ) : labTests?.length > 0 ? (
+                    ) : labTests && labTests.length > 0 ? (
                       <div className="space-y-4">
                         {labTests.map((test) => (
                           <Card key={test.id}>
                             <CardContent className="p-4">
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <h3 className="font-semibold">{test.testName}</h3>
+                                  <h3 className="font-semibold">{test.name}</h3>
                                   <p className="text-sm text-muted-foreground">
-                                    Booked for: {new Date(test.bookingDate).toLocaleDateString()}
+                                    Price: ₹{test.discountedPrice || test.price}
                                   </p>
                                   <p className="text-sm text-muted-foreground">
-                                    Status: {test.status}
+                                    Report Time: {test.reportTime}
                                   </p>
+                                  {test.homeCollection && (
+                                    <p className="text-sm text-green-600">
+                                      Home Collection Available
+                                    </p>
+                                  )}
                                 </div>
-                                {test.reportUrl && (
-                                  <Button asChild>
-                                    <a href={test.reportUrl} target="_blank" rel="noopener noreferrer">
-                                      View Report
-                                    </a>
-                                  </Button>
-                                )}
+                                <Button>Book Now</Button>
                               </div>
                             </CardContent>
                           </Card>
                         ))}
                       </div>
                     ) : (
-                      <p>No lab tests booked yet.</p>
+                      <p>No lab tests available.</p>
                     )}
                   </CardContent>
                 </Card>
