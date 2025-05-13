@@ -682,17 +682,21 @@ class Storage {
   // Lab Tests methods
 async getLabTests(): Promise<any[]> {
   try {
-    const tests = await db.select().from(schema.labTests);
+    const tests = await db.query.labTests.findMany({
+      orderBy: [desc(schema.labTests.createdAt)]
+    });
     return tests.map(test => ({
       id: test.id,
       name: test.name || '',
       description: test.description || '',
       price: test.price || 0,
       discountedPrice: test.discountedPrice || 0,
-      popularFor: test.popularFor || [],
+      popularFor: Array.isArray(test.popularFor) ? test.popularFor : [],
       preparationInfo: test.preparationInfo || '',
       reportTime: test.reportTime || '',
-      homeCollection: test.homeCollection || false
+      homeCollection: test.homeCollection || false,
+      createdAt: test.createdAt,
+      updatedAt: test.updatedAt
     }));
   } catch (error) {
     console.error("Error in getLabTests:", error);
