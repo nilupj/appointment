@@ -510,10 +510,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Lab Tests endpoints
-  app.get(`${apiPrefix}/admin/lab-tests`, isAdmin, async (req, res) => {
+  app.get(`${apiPrefix}/lab-tests`, async (req, res) => {
     try {
       const tests = await storage.getLabTests();
-      res.json(tests);
+      // Ensure we're sending a properly formatted JSON response
+      res.setHeader('Content-Type', 'application/json');
+      res.json(tests || []);
     } catch (error) {
       console.error("Error fetching lab tests:", error);
       res.status(500).json({ message: "Failed to fetch lab tests" });
