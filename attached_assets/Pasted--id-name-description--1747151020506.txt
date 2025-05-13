@@ -1,0 +1,18 @@
+ id |           name            |                                 description                                 | price | discounted_price |              popular_for               |                preparation_info                 | report_time | home_collection |         created_at         |         updated_at         
+----+---------------------------+-----------------------------------------------------------------------------+-------+------------------+----------------------------------------+-------------------------------------------------+-------------+-----------------+----------------------------+----------------------------
+  1 | Basic Blood Test          | A routine blood test to check overall health.                               |   500 |              400 | {"General Health"}                     | Fast for 8 hours before test.                   | 24 hours    | t               | 2025-05-13 14:20:12.594949 | 2025-05-13 14:20:12.594949
+  2 | Complete Blood Count      | Checks overall health and detects disorders                                 |   500 |              400 | {Fatigue,Infection}                    | No special preparation needed                   | 24 hours    | t               | 2025-05-13 15:09:33.915919 | 2025-05-13 15:09:33.915919
+  4 | Lipid Profile             | Measures cholesterol and triglyceride levels to assess cardiovascular risk. |  1000 |              850 | {"Heart risk",Obesity,Diabetes}        | Fasting for 9–12 hours is recommended.          | 12 hours    | t               | 2025-05-13 15:36:47.991112 | 2025-05-13 15:36:47.991112
+  5 | Thyroid Profile           | Checks T3, T4, and TSH levels to evaluate thyroid gland function.           |   800 |              650 | {"Weight changes","Hair loss",Fatigue} | No special preparation needed.                  | 24 hours    | t               | 2025-05-13 15:36:47.991112 | 2025-05-13 15:36:47.991112
+  6 | Liver Function Test (LFT) | A panel of blood tests used to assess the health of the liver.              |  1200 |              950 | {Jaundice,"Abdominal pain",Fatigue}    | Fasting may be required as per doctor’s advice. | 24 hours    | t               | 2025-05-13 15:36:47.991112 | 2025-05-13 15:36:47.991112
+  3 | New Lab Test Name         | Updated description of the lab test                                         |   150 |              120 | {common,urgent}                        | No special preparation required                 | 24 hours    | t               | 2025-05-13 15:36:47.991112 | 2025-05-13 15:36:47.991112
+(6 rows)
+
+~
+~
+~
+~
+~
+~
+~
+~
