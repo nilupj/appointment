@@ -382,6 +382,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await createPaypalOrder(req, res);
   });
 
+  // PhonePe routes
+  app.post("/api/phonepe/initiate", async (req, res) => {
+    try {
+      const { amount, transactionId } = req.body;
+      
+      // In production, integrate with actual PhonePe API
+      // This is a mock response
+      res.json({
+        success: true,
+        data: {
+          merchantId: "MERCHANTID",
+          merchantTransactionId: transactionId,
+          instrumentResponse: {
+            type: "UPI_INTENT",
+            redirectInfo: {
+              url: `upi://pay?pa=merchant@phonepe&pn=MerchantName&am=${amount}&tr=${transactionId}`
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error("PhonePe payment error:", error);
+      res.status(500).json({ message: "Payment initiation failed" });
+    }
+  });
+
   app.post("/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
   });

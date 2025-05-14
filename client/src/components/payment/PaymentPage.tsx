@@ -155,7 +155,36 @@ export default function PaymentPage() {
                   <div className="grid gap-4">
                     {paymentInfo.currency === "INR" ? (
                       <Button 
-                        onClick={handleCardPayment} 
+                        onClick={async () => {
+                          setIsProcessing(true);
+                          try {
+                            const response = await fetch("/api/phonepe/initiate", {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json"
+                              },
+                              body: JSON.stringify({
+                                amount: paymentInfo.amount,
+                                transactionId: `TX_${Date.now()}`
+                              })
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                              // For mobile devices, redirect to PhonePe app
+                              window.location.href = data.data.instrumentResponse.redirectInfo.url;
+                            }
+                          } catch (error) {
+                            console.error("PhonePe payment error:", error);
+                            toast({
+                              title: "Payment Error",
+                              description: "Failed to initiate PhonePe payment",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setIsProcessing(false);
+                          }
+                        }}
                         disabled={isProcessing}
                         className="w-full"
                       >
@@ -164,7 +193,7 @@ export default function PaymentPage() {
                         ) : (
                           <IndianRupee className="mr-2 h-4 w-4" />
                         )}
-                        Pay with PhonePay
+                        Pay with PhonePe
                       </Button>
                     ) : (
                       <Button 
