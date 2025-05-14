@@ -75,13 +75,24 @@ export default function AuthPage() {
   }, [user, navigate]);
 
   const onLoginSubmit = async (data: LoginFormValues) => {
-    loginMutation.mutate(data);
+    try {
+      await loginMutation.mutateAsync(data);
+    } catch (error: any) {
+      loginForm.setError("root", {
+        message: error?.response?.data?.message || "Login failed. Please try again."
+      });
+    }
   };
 
   const onRegisterSubmit = async (data: RegisterFormValues) => {
-    // Remove confirmPassword before sending to API
-    const { confirmPassword, ...registerData } = data;
-    registerMutation.mutate(registerData);
+    try {
+      const { confirmPassword, ...registerData } = data;
+      await registerMutation.mutateAsync(registerData);
+    } catch (error: any) {
+      registerForm.setError("root", {
+        message: error?.response?.data?.message || "Registration failed. Please try again."
+      });
+    }
   };
 
   if (user) {
@@ -158,6 +169,9 @@ export default function AuthPage() {
                           Forgot password?
                         </a>
                       </div>
+                      {loginForm.formState.errors.root && (
+                        <p className="text-sm text-red-500 mt-2">{loginForm.formState.errors.root.message}</p>
+                      )}
                       <Button 
                         type="submit" 
                         className="w-full" 
@@ -290,6 +304,9 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
+                      {registerForm.formState.errors.root && (
+                        <p className="text-sm text-red-500 mt-2">{registerForm.formState.errors.root.message}</p>
+                      )}
                       <Button 
                         type="submit" 
                         className="w-full" 
